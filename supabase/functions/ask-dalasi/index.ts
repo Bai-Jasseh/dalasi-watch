@@ -48,13 +48,30 @@ const REGIONS = [
   { id: "basse", name: "Basse" },
 ];
 
-const COMMODITY_IDS = new Set(COMMODITIES.map((c) => c.id));
 const REGION_IDS = new Set(REGIONS.map((r) => r.id));
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
 );
+
+// Commodities that actually have price data — populated per-request.
+let AVAILABLE_COMMODITY_IDS: Set<string> = new Set();
+
+async function loadAvailableCommodities(): Promise<void> {
+  const [ph, cr] = await Promise.all([
+    supabase.from("price_history").select("commodity_id"),
+    supabase.from("citizen_reports").select("commodity_id"),
+  ]);
+  const ids = new Set<string>();
+  (ph.data ?? []).forEach((r: any) => ids.add(r.commodity_id));
+  (cr.data ?? []).forEach((r: any) => ids.add(r.commodity_id));
+  AVAILABLE_COMMODITY_IDS = ids;
+}
+
+function availableCommodities() {
+  return COMMODITIES.filter((c) => AVAILABLE_COMMODITY_IDS.has(c.id));
+}
 
 // ---------- Tool implementations ----------
 
