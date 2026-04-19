@@ -59,13 +59,22 @@ const supabase = createClient(
 let AVAILABLE_COMMODITY_IDS: Set<string> = new Set();
 
 async function loadAvailableCommodities(): Promise<void> {
-  const [ph, cr] = await Promise.all([
-    supabase.from("price_history").select("commodity_id"),
-    supabase.from("citizen_reports").select("commodity_id"),
-  ]);
+  // Fetch in chunks of 1000 to bypass PostgREST's default row cap, then dedupe client-side.
   const ids = new Set<string>();
-  (ph.data ?? []).forEach((r: any) => ids.add(r.commodity_id));
-  (cr.data ?? []).forEach((r: any) => ids.add(r.commodity_id));
+  for (const table of ["price_history", "citizen_reports"] as const) {
+    let from = 0;
+    const pageSize = 1000;
+    while (true) {
+      const { data, error } = await supabase
+        .from(table)
+        .select("commodity_id")
+        .range(from, from + pageSize - 1);
+      if (error || !data || data.length === 0) break;
+      data.forEach((r: any) => ids.add(r.commodity_id));
+      if (data.length < pageSize) break;
+      from += pageSize;
+    }
+  }
   AVAILABLE_COMMODITY_IDS = ids;
 }
 
