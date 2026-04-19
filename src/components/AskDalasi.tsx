@@ -93,14 +93,14 @@ export function AskDalasi() {
       </button>
 
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="right" className="flex w-full flex-col p-0 sm:max-w-md">
+        <SheetContent side="right" className="flex w-full flex-col p-0 sm:max-w-lg">
           <SheetHeader className="border-b border-border bg-navy p-4 text-left text-navy-foreground">
             <SheetTitle className="flex items-center gap-2 text-navy-foreground">
               <Sparkles className="h-4 w-4 text-gold" />
-              Ask DalasiWatch
+              Ask DalasiWatch — Market Analyst
             </SheetTitle>
             <SheetDescription className="text-navy-foreground/70">
-              AI assistant powered by real market data from all 7 regions.
+              AI analyst with 13 tools: prices, trends, top movers, volatility, regional rankings, inflation index & more.
             </SheetDescription>
           </SheetHeader>
 
@@ -108,7 +108,7 @@ export function AskDalasi() {
             {messages.length === 0 && (
               <div className="space-y-3">
                 <p className="text-sm text-muted-foreground">
-                  Ask about prices, compare regions, or check trends. Try:
+                  Ask anything about Gambian market data — I'll filter, sort, chart, and explain. Try:
                 </p>
                 <div className="flex flex-col gap-2">
                   {STARTERS.map((s) => (
