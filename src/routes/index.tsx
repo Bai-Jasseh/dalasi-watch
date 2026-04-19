@@ -5,13 +5,13 @@ import { Users, Map, ShieldCheck, ArrowRight, Activity } from "lucide-react";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "LumaTrack — Transparency in Every Basket" },
+{ title: "DalasiWatch — Transparency in Every Basket" },
       {
         name: "description",
         content:
-          "From Banjul to Basse, LumaTrack tracks the pulse of the nation. Find fair prices and monitor inflation across The Gambia.",
+          "From Banjul to Basse, DalasiWatch tracks the pulse of the nation. Find fair prices and monitor inflation across The Gambia.",
       },
-      { property: "og:title", content: "LumaTrack — Transparency in Every Basket" },
+      { property: "og:title", content: "DalasiWatch — Transparency in Every Basket" },
       {
         property: "og:description",
         content: "The Gambia's official community-powered price monitoring platform.",
@@ -109,7 +109,7 @@ DalasiWatch
       {/* Trust bar */}
       <section className="mx-auto max-w-7xl px-4 py-16 md:py-24">
         <div className="mb-10 text-center">
-          <h2 className="text-3xl font-bold md:text-4xl">How LumaTrack Works</h2>
+          <h2 className="text-3xl font-bold md:text-4xl">How DalasiWatch Works</h2>
           <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
             A trusted bridge between citizens, markets, and the Ministry of Trade.
           </p>
