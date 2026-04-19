@@ -1,11 +1,11 @@
 import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { CheckCircle2, Megaphone } from "lucide-react";
+import { CheckCircle2, Megaphone, Users, MapPin } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { PageIntro } from "@/components/PageIntro";
 import { COMMODITIES, REGIONS } from "@/data/commodities";
-import { saveReport, type CitizenReport } from "@/data/store";
+import { saveReport, loadReports, type CitizenReport } from "@/data/store";
 import { useApp } from "@/context/AppContext";
 
 export const Route = createFileRoute("/report")({
@@ -25,6 +25,7 @@ export const Route = createFileRoute("/report")({
 function Report() {
   const { refreshHistory } = useApp();
   const [submitted, setSubmitted] = React.useState(false);
+  const [reports, setReports] = React.useState<CitizenReport[]>([]);
   const [form, setForm] = React.useState({
     commodityId: COMMODITIES[0].id,
     regionId: REGIONS[0].id,
@@ -32,6 +33,10 @@ function Report() {
     price: "",
     reporter: "",
   });
+
+  React.useEffect(() => {
+    setReports(loadReports());
+  }, []);
 
   function update<K extends keyof typeof form>(k: K, v: string) {
     setForm((f) => ({ ...f, [k]: v }));
@@ -52,6 +57,7 @@ function Report() {
     };
     saveReport(r);
     refreshHistory();
+    setReports(loadReports());
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 4000);
     setForm((f) => ({ ...f, market: "", price: "" }));
@@ -162,6 +168,50 @@ function Report() {
             Submit Report
           </button>
         </form>
+
+        <section className="space-y-3 rounded-2xl border border-border bg-card p-5 shadow-sm">
+          <div className="flex items-center gap-2">
+            <Users className="h-5 w-5 text-navy" />
+            <h2 className="text-lg font-bold">Community Reports</h2>
+            <span className="ml-auto text-xs text-muted-foreground">
+              Names hidden for privacy
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Recent prices shared by fellow Gambians. No names — just facts from the market.
+          </p>
+          {reports.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-border bg-muted/30 p-6 text-center text-sm text-muted-foreground">
+              No reports yet. Be the first to share a price you saw today!
+            </div>
+          ) : (
+            <ul className="divide-y divide-border">
+              {reports.slice(0, 12).map((r) => {
+                const c = COMMODITIES.find((x) => x.id === r.commodityId);
+                const reg = REGIONS.find((x) => x.id === r.regionId);
+                return (
+                  <li key={r.id} className="flex items-center justify-between gap-3 py-3">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 text-sm font-semibold">
+                        <span>{c?.name ?? r.commodityId}</span>
+                        <span className="text-muted-foreground">·</span>
+                        <span className="truncate text-muted-foreground">{r.market}</span>
+                      </div>
+                      <div className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
+                        <MapPin className="h-3 w-3" />
+                        {reg?.name ?? r.regionId} · {r.date}
+                      </div>
+                    </div>
+                    <div className="shrink-0 rounded-lg bg-navy/10 px-3 py-1.5 text-sm font-bold text-navy">
+                      GMD {r.price.toLocaleString()}
+                      {c?.unit ? <span className="ml-1 text-xs font-medium opacity-70">/{c.unit}</span> : null}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </section>
       </div>
 
       <style>{`.input{width:100%;border:1px solid var(--border);background:var(--background);border-radius:0.5rem;padding:0.5rem 0.75rem;font-size:0.875rem}.input:focus{outline:none;box-shadow:0 0 0 2px var(--navy)}`}</style>
