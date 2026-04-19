@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer';
 
-const BASE = 'https://id-preview--3ecb6358-2d95-46cc-be75-136abbea10cd.lovable.app';
+const BASE = 'https://dalasi-watch.lovable.app';
 const OUT = 'public/screens';
 
 const pages = [
