@@ -85,8 +85,8 @@ function regionLabel(id: string) {
 }
 
 async function getLatestPrice(args: { commodity_id: string; region_id?: string }) {
-  if (!COMMODITY_IDS.has(args.commodity_id)) {
-    return { error: `Unknown commodity_id "${args.commodity_id}". Use list_commodities to see valid IDs.` };
+  if (!AVAILABLE_COMMODITY_IDS.has(args.commodity_id)) {
+    return { error: `No price data available for "${args.commodity_id}". Use list_commodities to see commodities we currently track prices for.` };
   }
   if (args.region_id && !REGION_IDS.has(args.region_id)) {
     return { error: `Unknown region_id "${args.region_id}". Use list_regions to see valid IDs.` };
