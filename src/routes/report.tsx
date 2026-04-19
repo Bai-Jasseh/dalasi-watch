@@ -70,6 +70,7 @@ function Report() {
     saveReport(r);
     refreshHistory();
     setReports(loadReports());
+    setVerified(getVerifiedReports());
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 4000);
     setForm((f) => ({ ...f, market: "", price: "" }));
