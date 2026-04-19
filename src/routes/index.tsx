@@ -119,8 +119,8 @@ DalasiWatch
             { to: "/dashboard", icon: Home, label: "Dashboard", tone: "from-navy/10 text-navy" },
             { to: "/markets", icon: Store, label: "Markets", tone: "from-stable/15 text-stable" },
             { to: "/compare", icon: Scale, label: "Compare", tone: "from-gold/20 text-gold-foreground" },
-            { to: "/report", icon: Megaphone, label: "Report", tone: "from-alert/15 text-alert" },
             { to: "/analytics", icon: BarChart3, label: "Analytics", tone: "from-navy/10 text-navy" },
+            { to: "/report", icon: Megaphone, label: "Report", tone: "from-alert/15 text-alert" },
             { to: "/profile", icon: User, label: "Profile", tone: "from-muted text-foreground" },
           ].map((n, i) => {
             const Icon = n.icon;
