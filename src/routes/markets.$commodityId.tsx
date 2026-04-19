@@ -144,7 +144,7 @@ function Detail() {
                     borderRadius: 12,
                     fontSize: 12,
                   }}
-                  formatter={(v: number) => [`GMD ${v.toLocaleString()}`, "Price"]}
+                  formatter={(v) => [`GMD ${Number(v).toLocaleString()}`, "Price"]}
                 />
                 <Area
                   type="monotone"

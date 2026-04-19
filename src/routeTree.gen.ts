@@ -9,38 +9,174 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ReportRouteImport } from './routes/report'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as MarketsRouteImport } from './routes/markets'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as CompareRouteImport } from './routes/compare'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MarketsCommodityIdRouteImport } from './routes/markets.$commodityId'
 
+const ReportRoute = ReportRouteImport.update({
+  id: '/report',
+  path: '/report',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketsRoute = MarketsRouteImport.update({
+  id: '/markets',
+  path: '/markets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompareRoute = CompareRouteImport.update({
+  id: '/compare',
+  path: '/compare',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MarketsCommodityIdRoute = MarketsCommodityIdRouteImport.update({
+  id: '/$commodityId',
+  path: '/$commodityId',
+  getParentRoute: () => MarketsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/compare': typeof CompareRoute
+  '/dashboard': typeof DashboardRoute
+  '/markets': typeof MarketsRouteWithChildren
+  '/profile': typeof ProfileRoute
+  '/report': typeof ReportRoute
+  '/markets/$commodityId': typeof MarketsCommodityIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/compare': typeof CompareRoute
+  '/dashboard': typeof DashboardRoute
+  '/markets': typeof MarketsRouteWithChildren
+  '/profile': typeof ProfileRoute
+  '/report': typeof ReportRoute
+  '/markets/$commodityId': typeof MarketsCommodityIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/compare': typeof CompareRoute
+  '/dashboard': typeof DashboardRoute
+  '/markets': typeof MarketsRouteWithChildren
+  '/profile': typeof ProfileRoute
+  '/report': typeof ReportRoute
+  '/markets/$commodityId': typeof MarketsCommodityIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/analytics'
+    | '/compare'
+    | '/dashboard'
+    | '/markets'
+    | '/profile'
+    | '/report'
+    | '/markets/$commodityId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/analytics'
+    | '/compare'
+    | '/dashboard'
+    | '/markets'
+    | '/profile'
+    | '/report'
+    | '/markets/$commodityId'
+  id:
+    | '__root__'
+    | '/'
+    | '/analytics'
+    | '/compare'
+    | '/dashboard'
+    | '/markets'
+    | '/profile'
+    | '/report'
+    | '/markets/$commodityId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnalyticsRoute: typeof AnalyticsRoute
+  CompareRoute: typeof CompareRoute
+  DashboardRoute: typeof DashboardRoute
+  MarketsRoute: typeof MarketsRouteWithChildren
+  ProfileRoute: typeof ProfileRoute
+  ReportRoute: typeof ReportRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/report': {
+      id: '/report'
+      path: '/report'
+      fullPath: '/report'
+      preLoaderRoute: typeof ReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/markets': {
+      id: '/markets'
+      path: '/markets'
+      fullPath: '/markets'
+      preLoaderRoute: typeof MarketsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compare': {
+      id: '/compare'
+      path: '/compare'
+      fullPath: '/compare'
+      preLoaderRoute: typeof CompareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +184,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/markets/$commodityId': {
+      id: '/markets/$commodityId'
+      path: '/$commodityId'
+      fullPath: '/markets/$commodityId'
+      preLoaderRoute: typeof MarketsCommodityIdRouteImport
+      parentRoute: typeof MarketsRoute
+    }
   }
 }
 
+interface MarketsRouteChildren {
+  MarketsCommodityIdRoute: typeof MarketsCommodityIdRoute
+}
+
+const MarketsRouteChildren: MarketsRouteChildren = {
+  MarketsCommodityIdRoute: MarketsCommodityIdRoute,
+}
+
+const MarketsRouteWithChildren =
+  MarketsRoute._addFileChildren(MarketsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnalyticsRoute: AnalyticsRoute,
+  CompareRoute: CompareRoute,
+  DashboardRoute: DashboardRoute,
+  MarketsRoute: MarketsRouteWithChildren,
+  ProfileRoute: ProfileRoute,
+  ReportRoute: ReportRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
