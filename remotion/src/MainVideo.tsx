@@ -14,6 +14,7 @@ import { SceneSolution } from "./scenes/SceneSolution";
 import { SceneMarkets } from "./scenes/SceneMarkets";
 import { SceneReport } from "./scenes/SceneReport";
 import { SceneVerify } from "./scenes/SceneVerify";
+import { SceneAI } from "./scenes/SceneAI";
 import { SceneImpact } from "./scenes/SceneImpact";
 import { SceneClose } from "./scenes/SceneClose";
 import { COLORS } from "./theme";
@@ -91,6 +92,17 @@ export const MainVideo: React.FC = () => {
         <TransitionSeries.Transition
           presentation={fade()}
           timing={linearTiming({ durationInFrames: 18 })}
+        />
+
+        <TransitionSeries.Sequence durationInFrames={270}>
+          <SceneAI />
+        </TransitionSeries.Sequence>
+        <TransitionSeries.Transition
+          presentation={slide({ direction: "from-right" })}
+          timing={springTiming({
+            config: { damping: 200 },
+            durationInFrames: 22,
+          })}
         />
 
         <TransitionSeries.Sequence durationInFrames={240}>
