@@ -39,7 +39,7 @@ function Landing() {
             <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gold text-gold-foreground">
               <Activity className="h-4 w-4" />
             </div>
-LumaTrack
+DalasiWatch
           </div>
           <Link
             to="/dashboard"
@@ -91,7 +91,7 @@ LumaTrack
               to="/dashboard"
               className="group inline-flex items-center gap-2 rounded-full bg-gold px-8 py-4 text-base font-semibold text-gold-foreground shadow-glow transition-transform duration-300 animate-breath hover:-translate-y-0.5 hover:shadow-elegant"
             >
-              Launch LumaTrack Dashboard
+              Launch DalasiWatch Dashboard
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
           </motion.div>
@@ -159,7 +159,7 @@ LumaTrack
       </section>
 
       <footer className="border-t border-border py-8 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} LumaTrack · Built for The Gambia 🇬🇲
+        © {new Date().getFullYear()} DalasiWatch · Built for The Gambia 🇬🇲
       </footer>
     </div>
   );
