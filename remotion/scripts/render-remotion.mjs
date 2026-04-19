@@ -36,7 +36,7 @@ await renderMedia({
   composition,
   serveUrl: bundled,
   codec: "h264",
-  outputLocation: "/mnt/documents/DalasiWatch-Demo-Video-v2.mp4",
+  outputLocation: "/mnt/documents/DalasiWatch-Demo-Video-v3.mp4",
   puppeteerInstance: browser,
   muted: true,
   concurrency: 2,
