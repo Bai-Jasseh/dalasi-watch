@@ -91,13 +91,43 @@ function Report() {
 
         <PageIntro
           title="Be a market watchdog for your community"
-          description="Saw a seller charging an unfair price? Tell us! Every report you send helps the Ministry of Trade spot price gouging faster and protects other shoppers."
+          description="Saw a seller charging an unfair price? Tell us! A report becomes 'Verified' once at least 2 people report the same item at the same market — that way only trustworthy prices reach other shoppers."
           bullets={[
             "Pick the item, your region, and the market name.",
             "Type the exact price you saw on the shelf (in GMD).",
+            "We need 2+ matching reports before a price is shown as Verified ✅.",
             "Your name is optional — you can stay anonymous.",
           ]}
         />
+
+        <section className="space-y-3 rounded-2xl border border-border bg-card p-5 shadow-sm">
+          <div className="flex items-center gap-2">
+            <Landmark className="h-5 w-5 text-navy" />
+            <h2 className="text-lg font-bold">Trusted prices across regions</h2>
+            <span className="ml-auto text-xs text-muted-foreground">
+              {COMMODITIES.find((c) => c.id === form.commodityId)?.name}
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Latest verified prices already on record for the item you selected. Use them as a reference before you submit your own report.
+          </p>
+          <ul className="grid gap-2 sm:grid-cols-2">
+            {regionalReference.map(({ region, price }) => (
+              <li
+                key={region.id}
+                className="flex items-center justify-between rounded-xl border border-border bg-muted/30 px-3 py-2"
+              >
+                <div className="flex items-center gap-2 text-sm">
+                  <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span className="font-medium">{region.name}</span>
+                </div>
+                <span className="text-sm font-bold text-navy">
+                  {price ? `GMD ${price.toLocaleString()}` : "—"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
 
         {submitted && (
           <motion.div
