@@ -182,7 +182,7 @@ async function getPriceTrend(args: { commodity_id: string; region_id: string; da
 }
 
 async function compareRegions(args: { commodity_id: string }) {
-  if (!COMMODITY_IDS.has(args.commodity_id)) return { error: `Unknown commodity_id "${args.commodity_id}".` };
+  if (!AVAILABLE_COMMODITY_IDS.has(args.commodity_id)) return { error: `No price data for "${args.commodity_id}".` };
   const latest = await getLatestPrice({ commodity_id: args.commodity_id });
   if ("error" in latest) return latest;
   const sorted = [...(latest.prices ?? [])].sort((a, b) => a.price - b.price);
