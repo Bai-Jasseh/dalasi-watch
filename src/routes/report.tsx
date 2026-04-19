@@ -1,11 +1,11 @@
 import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { CheckCircle2, Megaphone } from "lucide-react";
+import { CheckCircle2, Megaphone, Users, MapPin } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { PageIntro } from "@/components/PageIntro";
 import { COMMODITIES, REGIONS } from "@/data/commodities";
-import { saveReport, type CitizenReport } from "@/data/store";
+import { saveReport, loadReports, type CitizenReport } from "@/data/store";
 import { useApp } from "@/context/AppContext";
 
 export const Route = createFileRoute("/report")({
