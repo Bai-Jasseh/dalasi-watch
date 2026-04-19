@@ -1,1 +1,4 @@
 project_id = "yekqegwkagxmeczvvfoq"
+
+[functions.ask-dalasi]
+verify_jwt = false
