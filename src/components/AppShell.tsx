@@ -4,7 +4,7 @@ import { useApp } from "@/context/AppContext";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { to: "/dashboard", icon: Home, key: "home" as const, label: "Home" },
+  { to: "/", icon: Home, key: "home" as const, label: "Home" },
   { to: "/markets", icon: Store, key: "markets" as const, label: "Markets" },
   { to: "/report", icon: Megaphone, key: "report" as const, label: "Report" },
   { to: "/analytics", icon: BarChart3, key: "analytics" as const, label: "Analytics" },
@@ -31,7 +31,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </Link>
           <nav className="hidden items-center gap-1 md:flex">
             {NAV.map((n) => {
-              const active = loc.pathname.startsWith(n.to);
+            const active = n.to === "/" ? loc.pathname === "/" : loc.pathname.startsWith(n.to);
               return (
                 <Link
                   key={n.to}
@@ -59,7 +59,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         aria-label="Primary"
       >
         {NAV.map((n) => {
-          const active = loc.pathname.startsWith(n.to);
+          const active = n.to === "/" ? loc.pathname === "/" : loc.pathname.startsWith(n.to);
           const Icon = n.icon;
           return (
             <Link
