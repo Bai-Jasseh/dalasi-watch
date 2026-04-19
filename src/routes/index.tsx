@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Users, Map, ShieldCheck, ArrowRight, Activity } from "lucide-react";
+import { Users, Map, ShieldCheck, ArrowRight, Activity, Home, Store, Scale, Megaphone, BarChart3, User } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -103,6 +103,47 @@ DalasiWatch
             <span>•</span>
             <span>Updated Daily</span>
           </div>
+        </div>
+      </section>
+
+      {/* Quick navigation */}
+      <section className="mx-auto max-w-7xl px-4 pt-12 md:pt-16">
+        <div className="mb-6 text-center">
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Jump to
+          </p>
+          <h2 className="mt-1 text-2xl font-bold md:text-3xl">Explore DalasiWatch</h2>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          {[
+            { to: "/dashboard", icon: Home, label: "Dashboard", tone: "from-navy/10 text-navy" },
+            { to: "/markets", icon: Store, label: "Markets", tone: "from-stable/15 text-stable" },
+            { to: "/compare", icon: Scale, label: "Compare", tone: "from-gold/20 text-gold-foreground" },
+            { to: "/report", icon: Megaphone, label: "Report", tone: "from-alert/15 text-alert" },
+            { to: "/analytics", icon: BarChart3, label: "Analytics", tone: "from-navy/10 text-navy" },
+            { to: "/profile", icon: User, label: "Profile", tone: "from-muted text-foreground" },
+          ].map((n, i) => {
+            const Icon = n.icon;
+            return (
+              <motion.div
+                key={n.to}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.05 }}
+              >
+                <Link
+                  to={n.to}
+                  className={`group flex h-full flex-col items-center justify-center gap-2 rounded-2xl border border-border bg-gradient-to-br ${n.tone} to-card p-4 text-center shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-elegant`}
+                >
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-card shadow-sm">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <span className="text-sm font-semibold text-foreground">{n.label}</span>
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
       </section>
 
