@@ -59,7 +59,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         aria-label="Primary"
       >
         {NAV.map((n) => {
-          const active = loc.pathname.startsWith(n.to);
+          const active = n.to === "/" ? loc.pathname === "/" : loc.pathname.startsWith(n.to);
           const Icon = n.icon;
           return (
             <Link
