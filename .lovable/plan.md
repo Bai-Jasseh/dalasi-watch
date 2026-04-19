@@ -1,42 +1,40 @@
 
 
-## Simplification Plan — Final
+## Minimal "Watch demo" text link on the homepage
 
-Keep **Compare** in the nav. Final nav: **Home · Markets · Compare · Analytics · Report**
+A small, unobtrusive text link that doesn't compete with the main CTA but is discoverable for judges/visitors who want to see the pitch.
+
+### Best placement
+
+Inside the existing meta row directly below the primary CTA — the line that currently reads:
+
+> 🇬🇲 7 Regions · 25+ Tracked Commodities · Updated Daily
+
+Add a fourth item: **▶ Watch 4-min demo**
+
+Why this spot:
+- Already a low-emphasis line, so it doesn't fight the gold "Launch Dashboard" button
+- Sits right under the CTA where eyes naturally land after reading the hero
+- Fits the existing visual rhythm (dot separators, same muted color)
+- No layout shift, no new section, no modal infrastructure needed beyond a single click handler
 
 ### Changes
 
-**1. Nav: 6 → 5 items** (`src/components/AppShell.tsx`, `src/routes/index.tsx`)
-- Remove **Profile** from primary nav
-- Keep Compare, Markets, Analytics, Report
-- Add a small globe icon button in the header for language toggle (replaces the Profile language section)
-- Profile route stays accessible via a small user icon in the header
+**1. Copy the video into public assets**
+- Copy `/mnt/documents/DalasiWatch-Pitch-Demo.mp4` → `public/demo.mp4`
 
-**2. Simplify gauge → badge** (`src/routes/markets.$commodityId.tsx`)
-Replace animated price-pressure gauge with a single color-coded status badge:
-- 🟢 Green: "Fair price (within recommended)"
-- 🟡 Amber: "Above recommended (+X%)"
-- 🔴 Red: "⚠ Potential price gouging (+X%) — Report to Ministry"
+**2. Edit `src/routes/index.tsx`**
+- Add `useState` for dialog open state
+- Replace the static meta row with one that includes a `<button>` styled as a text link: `▶ Watch 4-min demo` — same muted color (`text-navy-foreground/70`), underline on hover
+- On click, open a shadcn `Dialog` containing `<video controls preload="none" src="/demo.mp4">`
+- Dialog auto-pauses video on close (set `src=""` or pause via ref)
 
-**3. Trim landing page** (`src/routes/index.tsx`)
-- Remove the 6-button quick-nav grid (redundant now that top nav is tighter)
-- Keep: hero, single CTA, "How it works" trust bar
-
-**4. Header polish** (`src/components/AppShell.tsx`)
-- Add globe icon (language switcher popover) and user icon (→ /profile) on the right side of the header
-- Mobile bottom nav: 5 items instead of 6 — easier tap targets
+No new component file — keep it inline in `index.tsx` to stay minimal.
 
 ### Files touched
-- `src/components/AppShell.tsx`
-- `src/routes/index.tsx`
-- `src/routes/markets.$commodityId.tsx`
+- `public/demo.mp4` (new — copied from /mnt/documents)
+- `src/routes/index.tsx` (add link + inline dialog)
 
-### What stays untouched
-- Compare route + page (in nav as requested)
-- i18n system (just relocated)
-- Gouging detection logic, Top Gouging Alerts widget, Analytics page, Report verification
-- Profile page (reachable via header icon)
-
-### Demo narrative this enables
-"Browse Markets → Compare regions → see Analytics → Report gouging" — 5 clean nav items that mirror the pitch sentence exactly.
+### What I'm NOT doing
+- No second button, no header icon, no `/demo` route, no AppShell changes, no poster image extraction (the `<video>` element shows a black frame until played, which is fine for a text-link entry point)
 
