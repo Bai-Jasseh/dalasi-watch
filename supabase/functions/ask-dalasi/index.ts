@@ -140,7 +140,7 @@ async function getLatestPrice(args: { commodity_id: string; region_id?: string }
 }
 
 async function getPriceTrend(args: { commodity_id: string; region_id: string; days?: number }) {
-  if (!COMMODITY_IDS.has(args.commodity_id)) return { error: `Unknown commodity_id "${args.commodity_id}".` };
+  if (!AVAILABLE_COMMODITY_IDS.has(args.commodity_id)) return { error: `No price data for "${args.commodity_id}".` };
   if (!REGION_IDS.has(args.region_id)) return { error: `Unknown region_id "${args.region_id}".` };
   const days = Math.min(Math.max(args.days ?? 30, 1), 365);
 
