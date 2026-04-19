@@ -79,15 +79,13 @@ function Detail() {
 
   const latestAvg = trend.at(-1)?.price ?? 0;
 
-  // Gauge: 0% = at/below recommended, 100% = 50%+ above recommended
-  // Green zone 0-20%, Amber 20-40%, Red 40-100% (gouging threshold is +20%)
   const overPct = commodity.recommended > 0
     ? ((latestAvg - commodity.recommended) / commodity.recommended) * 100
     : 0;
-  const gaugePos = Math.max(0, Math.min(100, (overPct / 50) * 100));
   const gouging = isGouging(latestAvg, commodity.recommended);
-  const zoneColor =
-    overPct >= 20 ? "var(--alert)" : overPct >= 10 ? "#f59e0b" : "var(--stable)";
+  // Status: red if gouging (+20%), amber if above recommended, green if fair
+  const status: "fair" | "above" | "gouging" =
+    overPct >= 20 ? "gouging" : overPct > 0 ? "above" : "fair";
 
   return (
     <AppShell>
@@ -141,81 +139,61 @@ function Detail() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="rounded-2xl border border-border bg-card p-5 shadow-sm"
+          className={
+            status === "gouging"
+              ? "rounded-2xl border border-alert/40 bg-alert/10 p-5 shadow-sm"
+              : status === "above"
+                ? "rounded-2xl border border-amber-500/40 bg-amber-500/10 p-5 shadow-sm"
+                : "rounded-2xl border border-stable/40 bg-stable/10 p-5 shadow-sm"
+          }
         >
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-              Price Pressure Gauge
-            </h2>
-            <span
-              className="text-xs font-bold"
-              style={{ color: zoneColor }}
-            >
-              {overPct > 0 ? "+" : ""}
-              {overPct.toFixed(1)}% vs recommended
-            </span>
-          </div>
-
-          {/* Gauge bar */}
-          <div className="relative h-5 w-full overflow-hidden rounded-full border border-border">
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(to right, var(--stable) 0%, var(--stable) 30%, #f59e0b 50%, var(--alert) 80%, var(--alert) 100%)",
-                opacity: 0.85,
-              }}
-            />
-            {/* Marker */}
-            <motion.div
-              initial={{ left: "0%" }}
-              animate={{ left: `${gaugePos}%` }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="absolute top-1/2 z-10 h-7 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground shadow-lg ring-2 ring-background"
-            />
-          </div>
-
-          <div className="mt-2 flex justify-between text-[11px] font-medium text-muted-foreground">
-            <span>
-              Ministry Recommended
-              <br />
-              <span className="text-stable font-bold">
-                GMD {commodity.recommended.toLocaleString()}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <span
+                className={
+                  "flex h-10 w-10 items-center justify-center rounded-full text-lg font-bold " +
+                  (status === "gouging"
+                    ? "bg-alert text-alert-foreground"
+                    : status === "above"
+                      ? "bg-amber-500 text-white"
+                      : "bg-stable text-stable-foreground")
+                }
+                aria-hidden
+              >
+                {status === "gouging" ? "⚠" : status === "above" ? "↑" : "✓"}
               </span>
-            </span>
-            <span className="text-right">
-              Market Average
-              <br />
-              <span className="font-bold" style={{ color: zoneColor }}>
-                GMD {latestAvg.toLocaleString()}
-              </span>
-            </span>
-          </div>
-
-          {gouging && (
-            <motion.div
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="mt-4 flex items-start gap-3 rounded-xl border border-alert/40 bg-alert/10 p-3"
-            >
-              <span className="mt-0.5 text-lg">⚠️</span>
-              <div className="flex-1">
-                <p className="text-sm font-bold text-alert">
-                  Potential Price Gouging Detected
+              <div>
+                <p
+                  className={
+                    "text-sm font-bold " +
+                    (status === "gouging"
+                      ? "text-alert"
+                      : status === "above"
+                        ? "text-amber-700 dark:text-amber-400"
+                        : "text-stable")
+                  }
+                >
+                  {status === "gouging"
+                    ? `Potential price gouging (+${overPct.toFixed(1)}%)`
+                    : status === "above"
+                      ? `Above recommended (+${overPct.toFixed(1)}%)`
+                      : "Fair price (within recommended)"}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  Market average is more than 20% above the Ministry's recommended price.
+                  Market avg GMD {latestAvg.toLocaleString()} vs Ministry GMD{" "}
+                  {commodity.recommended.toLocaleString()}
                 </p>
-                <Link
-                  to="/report"
-                  className="mt-2 inline-block text-xs font-semibold text-alert underline underline-offset-2 hover:opacity-80"
-                >
-                  Report to Ministry of Trade →
-                </Link>
               </div>
-            </motion.div>
-          )}
+            </div>
+            {gouging && (
+              <Link
+                to="/report"
+                className="rounded-full bg-alert px-4 py-2 text-xs font-semibold text-alert-foreground hover:opacity-90"
+              >
+                Report to Ministry →
+              </Link>
+            )}
+          </div>
         </motion.div>
 
         <motion.div
