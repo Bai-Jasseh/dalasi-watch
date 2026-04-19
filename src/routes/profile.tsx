@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Globe, Smartphone, Bookmark, Trash2 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { PageIntro } from "@/components/PageIntro";
 import { useApp } from "@/context/AppContext";
 import type { Lang } from "@/i18n/strings";
 
@@ -44,6 +45,16 @@ function Profile() {
           </p>
           <h1 className="mt-1 text-3xl font-extrabold md:text-4xl">Profile</h1>
         </div>
+
+        <PageIntro
+          title="Make LumaTrack feel like home"
+          description="This is your settings room. Choose the language you read best, install the app on your phone, and manage the data we keep on your device."
+          bullets={[
+            "Switch the whole app to English, Wolof, or Mandinka.",
+            "Follow the steps to add LumaTrack to your phone's home screen.",
+            "Reset local data if you ever want a fresh start.",
+          ]}
+        />
 
         <Section icon={Globe} title="Language">
           <div className="grid grid-cols-3 gap-2">

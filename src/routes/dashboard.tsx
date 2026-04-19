@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { PageIntro } from "@/components/PageIntro";
 import { AlertBanner } from "@/components/AlertBanner";
 import { MinistryTicker } from "@/components/MinistryTicker";
 import { CommoditySearch } from "@/components/CommoditySearch";
@@ -67,6 +68,16 @@ function Dashboard() {
             <CommoditySearch />
           </div>
         </motion.div>
+
+        <PageIntro
+          title="Your national market control room"
+          description="See what's happening with food prices across The Gambia right now — at a glance."
+          bullets={[
+            "Read official government messages in the announcements ticker.",
+            "Spot any unfair pricing in the red alert banner.",
+            "Tap a Featured Commodity card to open its full report card.",
+          ]}
+        />
 
         <MinistryTicker />
         <AlertBanner />

@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { CheckCircle2, Megaphone } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { PageIntro } from "@/components/PageIntro";
 import { COMMODITIES, REGIONS } from "@/data/commodities";
 import { saveReport, type CitizenReport } from "@/data/store";
 import { useApp } from "@/context/AppContext";
@@ -68,6 +69,16 @@ function Report() {
             Your submission helps thousands of Gambian families find fair prices.
           </p>
         </div>
+
+        <PageIntro
+          title="Be a market watchdog for your community"
+          description="Saw a seller charging an unfair price? Tell us! Every report you send helps the Ministry of Trade spot price gouging faster and protects other shoppers."
+          bullets={[
+            "Pick the item, your region, and the market name.",
+            "Type the exact price you saw on the shelf (in GMD).",
+            "Your name is optional — you can stay anonymous.",
+          ]}
+        />
 
         {submitted && (
           <motion.div

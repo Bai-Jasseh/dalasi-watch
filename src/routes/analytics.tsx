@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { AlertTriangle, TrendingUp, ShieldCheck } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { PageIntro } from "@/components/PageIntro";
 import { COMMODITIES, REGIONS } from "@/data/commodities";
 import { getLatest, isGouging, pctVsRecommended } from "@/data/generator";
 import { useApp } from "@/context/AppContext";
@@ -68,6 +69,16 @@ function Analytics() {
           </p>
           <h1 className="mt-1 text-3xl font-extrabold md:text-4xl">National Analytics</h1>
         </div>
+
+        <PageIntro
+          title="The Ministry of Trade's bird's-eye view"
+          description="This dashboard turns thousands of price points into a few simple numbers so officials can act fast on inflation and unfair pricing."
+          bullets={[
+            "The 3 big cards show overall inflation, active alerts, and regions covered.",
+            "The Regional Heatmap colors each region: green = fair, yellow = warming up, red = unfair pricing.",
+            "The Top Gouging Incidents table lists the worst overcharges right now.",
+          ]}
+        />
 
         <div className="grid gap-3 sm:grid-cols-3">
           <Stat

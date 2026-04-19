@@ -10,6 +10,7 @@ import {
   YAxis,
 } from "recharts";
 import { AppShell } from "@/components/AppShell";
+import { PageIntro } from "@/components/PageIntro";
 import { COMMODITIES, REGIONS } from "@/data/commodities";
 import { useApp } from "@/context/AppContext";
 import { isGouging, pctVsRecommended } from "@/data/generator";
@@ -115,6 +116,16 @@ function Detail() {
             </div>
           </div>
         </motion.div>
+
+        <PageIntro
+          title="The full report card for this item"
+          description="Everything you need to know about this product's price, all on one page."
+          bullets={[
+            "The two big numbers compare today's average price with the Ministry's fair price.",
+            "The chart shows how the price moved every day for the last 30 days.",
+            "The table lists each region so you can see where it's cheapest and where it's overpriced.",
+          ]}
+        />
 
         <motion.div
           initial={{ opacity: 0, y: 12 }}
