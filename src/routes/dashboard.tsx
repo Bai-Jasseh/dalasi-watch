@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, AlertTriangle, ArrowRight } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { PageIntro } from "@/components/PageIntro";
 import { AlertBanner } from "@/components/AlertBanner";
@@ -26,6 +26,27 @@ export const Route = createFileRoute("/dashboard")({
 function Dashboard() {
   const { history } = useApp();
   const latest = history.length ? getLatest(history) : [];
+
+  // Top gouging alerts: commodities most above recommended price (region-level)
+  const topGouging = (() => {
+    const rows = COMMODITIES.flatMap((c) => {
+      const points = latest.filter((p) => p.commodityId === c.id);
+      return points.map((p) => {
+        const region = REGIONS.find((r) => r.id === p.regionId);
+        return {
+          commodity: c,
+          regionName: region?.name ?? p.regionId,
+          regionId: p.regionId,
+          price: p.price,
+          pct: pctVsRecommended(p.price, c.recommended),
+        };
+      });
+    });
+    return rows
+      .filter((r) => r.pct > 20)
+      .sort((a, b) => b.pct - a.pct)
+      .slice(0, 4);
+  })();
 
   // Featured: average national price per commodity
   const featured = COMMODITIES.slice(0, 8).map((c) => {
@@ -81,6 +102,73 @@ function Dashboard() {
 
         <MinistryTicker />
         <AlertBanner />
+
+        {topGouging.length > 0 && (
+          <section>
+            <div className="mb-3 flex items-end justify-between">
+              <div className="flex items-center gap-2">
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-alert/15 text-alert">
+                  <AlertTriangle className="h-4 w-4" />
+                </span>
+                <h2 className="text-lg font-bold">Top Price Gouging Alerts</h2>
+              </div>
+              <Link
+                to="/analytics"
+                className="text-sm text-navy underline-offset-4 hover:underline"
+              >
+                See analytics →
+              </Link>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {topGouging.map((g, i) => (
+                <motion.div
+                  key={`${g.commodity.id}-${g.regionId}`}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05, duration: 0.4 }}
+                >
+                  <Link
+                    to="/markets/$commodityId"
+                    params={{ commodityId: g.commodity.id }}
+                    className="group block overflow-hidden rounded-2xl border border-alert/30 bg-gradient-to-br from-alert/10 via-card to-card p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-elegant"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-bold">{g.commodity.name}</p>
+                        <p className="truncate text-xs text-muted-foreground">{g.regionName}</p>
+                      </div>
+                      <span className="shrink-0 rounded-full bg-alert px-2 py-0.5 text-[10px] font-extrabold uppercase text-alert-foreground">
+                        +{g.pct.toFixed(0)}%
+                      </span>
+                    </div>
+                    <div className="mt-3 flex items-end justify-between">
+                      <div>
+                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                          Market avg
+                        </p>
+                        <p className="text-xl font-extrabold text-alert">
+                          GMD {Math.round(g.price).toLocaleString()}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                          Recommended
+                        </p>
+                        <p className="text-sm font-semibold text-muted-foreground line-through">
+                          GMD {Math.round(g.commodity.recommended).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-alert">
+                      View details
+                      <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section>
           <div className="mb-3 flex items-end justify-between">
