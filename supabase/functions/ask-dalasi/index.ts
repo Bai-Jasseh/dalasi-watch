@@ -303,8 +303,17 @@ Deno.serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
+    await loadAvailableCommodities();
+    const catalog = availableCommodities()
+      .map((c) => `- ${c.id}: ${c.name} (${c.unit})`)
+      .join("\n");
+    const dynamicSystem = `${SYSTEM_PROMPT}
+
+CURRENTLY TRACKED COMMODITIES (only these have price data — do NOT offer or invent others):
+${catalog}`;
+
     let messages: any[] = [
-      { role: "system", content: SYSTEM_PROMPT },
+      { role: "system", content: dynamicSystem },
       ...userMessages,
     ];
 
