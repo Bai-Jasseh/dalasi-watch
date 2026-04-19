@@ -1,6 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Users, Map, ShieldCheck, ArrowRight, Activity } from "lucide-react";
+import { Users, Map, ShieldCheck, ArrowRight, Activity, Play } from "lucide-react";
+import { useRef, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -22,6 +29,17 @@ export const Route = createFileRoute("/")({
 });
 
 function Landing() {
+  const [demoOpen, setDemoOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleDemoOpenChange = (open: boolean) => {
+    setDemoOpen(open);
+    if (!open && videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
@@ -102,9 +120,37 @@ DalasiWatch
             <span>25+ Tracked Commodities</span>
             <span>•</span>
             <span>Updated Daily</span>
+            <span>•</span>
+            <button
+              type="button"
+              onClick={() => setDemoOpen(true)}
+              className="inline-flex items-center gap-1 text-navy-foreground/70 underline-offset-4 transition-colors hover:text-navy-foreground hover:underline focus:outline-none focus-visible:underline"
+            >
+              <Play className="h-3 w-3" aria-hidden />
+              Watch 4-min demo
+            </button>
           </div>
         </div>
       </section>
+
+      <Dialog open={demoOpen} onOpenChange={handleDemoOpenChange}>
+        <DialogContent className="max-w-4xl p-0 overflow-hidden bg-background">
+          <DialogHeader className="px-6 pt-5 pb-2">
+            <DialogTitle>DalasiWatch — 4-minute pitch demo</DialogTitle>
+          </DialogHeader>
+          <div className="bg-black">
+            <video
+              ref={videoRef}
+              controls
+              preload="none"
+              src="/demo.mp4"
+              className="w-full h-auto max-h-[75vh]"
+            >
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Trust bar */}
       <section className="mx-auto max-w-7xl px-4 py-16 md:py-24">
