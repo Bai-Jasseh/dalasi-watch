@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown, Minus, AlertTriangle, ArrowRight } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { PageIntro } from "@/components/PageIntro";
-import { AlertBanner } from "@/components/AlertBanner";
+
 import { MinistryTicker } from "@/components/MinistryTicker";
 import { CommoditySearch } from "@/components/CommoditySearch";
 import { useApp } from "@/context/AppContext";
@@ -101,7 +101,7 @@ function Dashboard() {
         />
 
         <MinistryTicker />
-        <AlertBanner />
+        
 
         {topGouging.length > 0 && (
           <section>
