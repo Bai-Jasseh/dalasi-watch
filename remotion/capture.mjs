@@ -4,14 +4,14 @@ const BASE = 'https://dalasi-watch.lovable.app';
 const OUT = 'public/screens';
 
 const pages = [
-  { name: 'home',       url: '/',                       wait: 2000 },
-  { name: 'markets',    url: '/markets',                wait: 2000 },
-  { name: 'commodity',  url: '/markets/rice-imported',  wait: 2500 },
-  { name: 'compare',    url: '/compare',                wait: 2000 },
-  { name: 'analytics',  url: '/analytics',              wait: 2500 },
-  { name: 'dashboard',  url: '/dashboard',              wait: 2000 },
-  { name: 'report',     url: '/report',                 wait: 2000 },
-  { name: 'profile',    url: '/profile',                wait: 1500 },
+  { name: 'home',       url: '/',                   wait: 2500 },
+  { name: 'markets',    url: '/markets',            wait: 2500 },
+  { name: 'commodity',  url: '/markets/rice-sadam', wait: 3000 },
+  { name: 'compare',    url: '/compare',            wait: 2500 },
+  { name: 'analytics',  url: '/analytics',          wait: 3000 },
+  { name: 'dashboard',  url: '/dashboard',          wait: 2500 },
+  { name: 'report',     url: '/report',             wait: 2000 },
+  { name: 'profile',    url: '/profile',            wait: 1500 },
 ];
 
 const browser = await puppeteer.launch({
@@ -42,26 +42,34 @@ console.log('Capturing AI chat');
   const page = await fresh();
   try {
     await page.goto(BASE + '/markets', { waitUntil: 'networkidle2', timeout: 45000 });
-    await new Promise(r => setTimeout(r, 2000));
-    await page.evaluate(() => {
+    await new Promise(r => setTimeout(r, 2500));
+
+    // Click the floating ask button by aria-label
+    const clicked = await page.evaluate(() => {
+      const sel = document.querySelector('button[aria-label="Ask DalasiWatch AI"]');
+      if (sel) { sel.click(); return true; }
+      // fallback: any button containing the text
       const btn = [...document.querySelectorAll('button')].find(b =>
-        /ask dalasiwatch/i.test(b.textContent || '') ||
-        (b.getAttribute('aria-label') || '').toLowerCase().includes('ask')
+        (b.textContent || '').toLowerCase().includes('ask dalasiwatch')
       );
-      if (btn) btn.click();
+      if (btn) { btn.click(); return true; }
+      return false;
     });
+    console.log('  ask button clicked:', clicked);
     await new Promise(r => setTimeout(r, 1500));
     await page.screenshot({ path: `${OUT}/ai-open.png` });
 
+    // click first starter
     await page.evaluate(() => {
       const starter = [...document.querySelectorAll('button')].find(b =>
         /price of rice in brikama/i.test(b.textContent || '')
       );
       if (starter) starter.click();
     });
-    await new Promise(r => setTimeout(r, 9000));
+    await new Promise(r => setTimeout(r, 10000));
     await page.screenshot({ path: `${OUT}/ai-answer.png` });
 
+    // type follow-up
     await page.evaluate(() => {
       const inp = document.querySelector('input[placeholder*="prices" i]');
       if (inp) {
@@ -77,7 +85,7 @@ console.log('Capturing AI chat');
       const form = document.querySelector('form');
       if (form) form.requestSubmit ? form.requestSubmit() : form.submit();
     });
-    await new Promise(r => setTimeout(r, 9000));
+    await new Promise(r => setTimeout(r, 10000));
     await page.screenshot({ path: `${OUT}/ai-answer2.png` });
   } catch (e) { console.log('AI capture err:', e.message); }
   await page.close();
