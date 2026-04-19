@@ -66,10 +66,15 @@ function Report() {
     setCommodityOpen(false);
   }
 
-  React.useEffect(() => {
-    setReports(loadReports());
-    setVerified(getVerifiedReports());
+  const refreshLists = React.useCallback(async () => {
+    const [r, v] = await Promise.all([loadReports(), getVerifiedReports()]);
+    setReports(r);
+    setVerified(v);
   }, []);
+
+  React.useEffect(() => {
+    refreshLists();
+  }, [refreshLists]);
 
   // Already-trusted reference prices per region (from official history feed)
   const regionalReference = React.useMemo(() => {
@@ -84,26 +89,26 @@ function Report() {
     setForm((f) => ({ ...f, [k]: v }));
   }
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     const price = Number(form.price);
     if (!price || !form.market) return;
-    const r: CitizenReport = {
-      id: `${Date.now()}`,
-      commodityId: form.commodityId,
-      regionId: form.regionId,
-      market: form.market,
-      price,
-      reporter: form.reporter || "Anonymous",
-      date: new Date().toISOString().slice(0, 10),
-    };
-    saveReport(r);
-    refreshHistory();
-    setReports(loadReports());
-    setVerified(getVerifiedReports());
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 4000);
-    setForm((f) => ({ ...f, market: "", price: "" }));
+    try {
+      await saveReport({
+        commodityId: form.commodityId,
+        regionId: form.regionId,
+        market: form.market,
+        price,
+        reporter: form.reporter || "Anonymous",
+        date: new Date().toISOString().slice(0, 10),
+      });
+      await Promise.all([refreshHistory(), refreshLists()]);
+      setSubmitted(true);
+      setTimeout(() => setSubmitted(false), 4000);
+      setForm((f) => ({ ...f, market: "", price: "" }));
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   return (
