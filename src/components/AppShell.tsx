@@ -1,11 +1,12 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, Store, Megaphone, BarChart3, User, Activity } from "lucide-react";
+import { Home, Store, Scale, Megaphone, BarChart3, User, Activity } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { cn } from "@/lib/utils";
 
 const NAV = [
   { to: "/", icon: Home, key: "home" as const, label: "Home" },
   { to: "/markets", icon: Store, key: "markets" as const, label: "Markets" },
+  { to: "/compare", icon: Scale, key: "compare" as const, label: "Compare" },
   { to: "/report", icon: Megaphone, key: "report" as const, label: "Report" },
   { to: "/analytics", icon: BarChart3, key: "analytics" as const, label: "Analytics" },
   { to: "/profile", icon: User, key: "profile" as const, label: "Profile" },
