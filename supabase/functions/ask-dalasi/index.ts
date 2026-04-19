@@ -263,7 +263,7 @@ const TOOLS = [
 async function runTool(name: string, args: any) {
   switch (name) {
     case "list_commodities":
-      return { commodities: COMMODITIES };
+      return { commodities: availableCommodities() };
     case "list_regions":
       return { regions: REGIONS };
     case "get_latest_price":
