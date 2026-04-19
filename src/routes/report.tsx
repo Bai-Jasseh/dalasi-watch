@@ -1,11 +1,12 @@
 import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { CheckCircle2, Megaphone, Users, MapPin } from "lucide-react";
+import { CheckCircle2, Megaphone, Users, MapPin, ShieldCheck, Clock, Landmark } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { PageIntro } from "@/components/PageIntro";
 import { COMMODITIES, REGIONS } from "@/data/commodities";
-import { saveReport, loadReports, type CitizenReport } from "@/data/store";
+import { saveReport, loadReports, getVerifiedReports, type CitizenReport, type VerifiedReport } from "@/data/store";
+import { getLatest } from "@/data/generator";
 import { useApp } from "@/context/AppContext";
 
 export const Route = createFileRoute("/report")({
@@ -23,9 +24,10 @@ export const Route = createFileRoute("/report")({
 });
 
 function Report() {
-  const { refreshHistory } = useApp();
+  const { refreshHistory, history } = useApp();
   const [submitted, setSubmitted] = React.useState(false);
   const [reports, setReports] = React.useState<CitizenReport[]>([]);
+  const [verified, setVerified] = React.useState<VerifiedReport[]>([]);
   const [form, setForm] = React.useState({
     commodityId: COMMODITIES[0].id,
     regionId: REGIONS[0].id,
@@ -36,7 +38,17 @@ function Report() {
 
   React.useEffect(() => {
     setReports(loadReports());
+    setVerified(getVerifiedReports());
   }, []);
+
+  // Already-trusted reference prices per region (from official history feed)
+  const regionalReference = React.useMemo(() => {
+    const latest = getLatest(history).filter((p) => p.commodityId === form.commodityId);
+    return REGIONS.map((r) => {
+      const point = latest.find((p) => p.regionId === r.id);
+      return { region: r, price: point?.price };
+    });
+  }, [history, form.commodityId]);
 
   function update<K extends keyof typeof form>(k: K, v: string) {
     setForm((f) => ({ ...f, [k]: v }));
@@ -58,6 +70,7 @@ function Report() {
     saveReport(r);
     refreshHistory();
     setReports(loadReports());
+    setVerified(getVerifiedReports());
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 4000);
     setForm((f) => ({ ...f, market: "", price: "" }));
@@ -78,13 +91,43 @@ function Report() {
 
         <PageIntro
           title="Be a market watchdog for your community"
-          description="Saw a seller charging an unfair price? Tell us! Every report you send helps the Ministry of Trade spot price gouging faster and protects other shoppers."
+          description="Saw a seller charging an unfair price? Tell us! A report becomes 'Verified' once at least 2 people report the same item at the same market — that way only trustworthy prices reach other shoppers."
           bullets={[
             "Pick the item, your region, and the market name.",
             "Type the exact price you saw on the shelf (in GMD).",
+            "We need 2+ matching reports before a price is shown as Verified ✅.",
             "Your name is optional — you can stay anonymous.",
           ]}
         />
+
+        <section className="space-y-3 rounded-2xl border border-border bg-card p-5 shadow-sm">
+          <div className="flex items-center gap-2">
+            <Landmark className="h-5 w-5 text-navy" />
+            <h2 className="text-lg font-bold">Trusted prices across regions</h2>
+            <span className="ml-auto text-xs text-muted-foreground">
+              {COMMODITIES.find((c) => c.id === form.commodityId)?.name}
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Latest verified prices already on record for the item you selected. Use them as a reference before you submit your own report.
+          </p>
+          <ul className="grid gap-2 sm:grid-cols-2">
+            {regionalReference.map(({ region, price }) => (
+              <li
+                key={region.id}
+                className="flex items-center justify-between rounded-xl border border-border bg-muted/30 px-3 py-2"
+              >
+                <div className="flex items-center gap-2 text-sm">
+                  <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span className="font-medium">{region.name}</span>
+                </div>
+                <span className="text-sm font-bold text-navy">
+                  {price ? `GMD ${price.toLocaleString()}` : "—"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
 
         {submitted && (
           <motion.div
@@ -178,38 +221,56 @@ function Report() {
             </span>
           </div>
           <p className="text-sm text-muted-foreground">
-            Recent prices shared by fellow Gambians. No names — just facts from the market.
+            A price needs <strong>2 or more matching reports</strong> from different shoppers before it shows the green Verified badge. Until then, it stays as Pending.
           </p>
-          {reports.length === 0 ? (
+          {verified.length === 0 ? (
             <div className="rounded-xl border border-dashed border-border bg-muted/30 p-6 text-center text-sm text-muted-foreground">
               No reports yet. Be the first to share a price you saw today!
             </div>
           ) : (
             <ul className="divide-y divide-border">
-              {reports.slice(0, 12).map((r) => {
-                const c = COMMODITIES.find((x) => x.id === r.commodityId);
-                const reg = REGIONS.find((x) => x.id === r.regionId);
+              {verified.slice(0, 12).map((v) => {
+                const c = COMMODITIES.find((x) => x.id === v.commodityId);
+                const reg = REGIONS.find((x) => x.id === v.regionId);
                 return (
-                  <li key={r.id} className="flex items-center justify-between gap-3 py-3">
+                  <li key={v.key} className="flex items-center justify-between gap-3 py-3">
                     <div className="min-w-0">
-                      <div className="flex items-center gap-2 text-sm font-semibold">
-                        <span>{c?.name ?? r.commodityId}</span>
+                      <div className="flex flex-wrap items-center gap-2 text-sm font-semibold">
+                        <span>{c?.name ?? v.commodityId}</span>
                         <span className="text-muted-foreground">·</span>
-                        <span className="truncate text-muted-foreground">{r.market}</span>
+                        <span className="truncate text-muted-foreground">{v.market}</span>
+                        {v.verified ? (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-stable/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-stable">
+                            <ShieldCheck className="h-3 w-3" /> Verified · {v.count}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-600">
+                            <Clock className="h-3 w-3" /> Pending · {v.count}/2
+                          </span>
+                        )}
                       </div>
                       <div className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
                         <MapPin className="h-3 w-3" />
-                        {reg?.name ?? r.regionId} · {r.date}
+                        {reg?.name ?? v.regionId} · {v.lastDate}
                       </div>
                     </div>
-                    <div className="shrink-0 rounded-lg bg-navy/10 px-3 py-1.5 text-sm font-bold text-navy">
-                      GMD {r.price.toLocaleString()}
+                    <div
+                      className={`shrink-0 rounded-lg px-3 py-1.5 text-sm font-bold ${
+                        v.verified ? "bg-stable/10 text-stable" : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      GMD {v.avgPrice.toLocaleString()}
                       {c?.unit ? <span className="ml-1 text-xs font-medium opacity-70">/{c.unit}</span> : null}
                     </div>
                   </li>
                 );
               })}
             </ul>
+          )}
+          {reports.length > 0 && (
+            <p className="pt-1 text-[11px] text-muted-foreground">
+              {reports.length} total submission{reports.length === 1 ? "" : "s"} from the community.
+            </p>
           )}
         </section>
       </div>
