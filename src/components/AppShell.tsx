@@ -4,7 +4,7 @@ import { useApp } from "@/context/AppContext";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { to: "/dashboard", icon: Home, key: "home" as const, label: "Home" },
+  { to: "/", icon: Home, key: "home" as const, label: "Home" },
   { to: "/markets", icon: Store, key: "markets" as const, label: "Markets" },
   { to: "/report", icon: Megaphone, key: "report" as const, label: "Report" },
   { to: "/analytics", icon: BarChart3, key: "analytics" as const, label: "Analytics" },
