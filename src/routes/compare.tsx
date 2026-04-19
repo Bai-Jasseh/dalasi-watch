@@ -19,7 +19,7 @@ import { useApp } from "@/context/AppContext";
 export const Route = createFileRoute("/compare")({
   head: () => ({
     meta: [
-      { title: "Compare Markets — LumaTrack" },
+      { title: "Compare Markets — DalasiWatch" },
       {
         name: "description",
         content: "Compare commodity prices side-by-side between any two regions in The Gambia.",

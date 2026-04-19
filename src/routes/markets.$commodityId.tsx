@@ -18,7 +18,7 @@ import { isGouging, pctVsRecommended } from "@/data/generator";
 export const Route = createFileRoute("/markets/$commodityId")({
   head: ({ params }) => {
     const c = COMMODITIES.find((x) => x.id === params.commodityId);
-    const title = c ? `${c.name} (${c.unit}) — LumaTrack` : "Commodity — LumaTrack";
+    const title = c ? `${c.name} (${c.unit}) — DalasiWatch` : "Commodity — DalasiWatch";
     return {
       meta: [
         { title },

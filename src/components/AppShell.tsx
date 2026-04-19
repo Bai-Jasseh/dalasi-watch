@@ -25,7 +25,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gold text-gold-foreground">
               <Activity className="h-4 w-4" />
             </div>
-            <span>LumaTrack</span>
+            <span>DalasiWatch</span>
             <span className="hidden text-xs font-normal text-navy-foreground/70 sm:inline">
               · {t("appTagline")}
             </span>

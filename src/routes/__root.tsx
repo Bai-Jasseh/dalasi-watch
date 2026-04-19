@@ -30,14 +30,14 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { name: "theme-color", content: "#002147" },
-      { title: "LumaTrack — National Market Intelligence for The Gambia" },
+{ title: "DalasiWatch — National Market Intelligence for The Gambia" },
       {
         name: "description",
         content:
-          "LumaTrack is The Gambia's community-powered price monitoring platform. Track fair prices from Banjul to Basse and stay ahead of inflation.",
+          "DalasiWatch is The Gambia's community-powered price monitoring platform. Track fair prices from Banjul to Basse and stay ahead of inflation.",
       },
-      { name: "author", content: "LumaTrack" },
-      { property: "og:title", content: "LumaTrack — Transparency in Every Basket" },
+      { name: "author", content: "DalasiWatch" },
+      { property: "og:title", content: "DalasiWatch — Transparency in Every Basket" },
       {
         property: "og:description",
         content: "Official community-powered price monitoring for The Gambia.",

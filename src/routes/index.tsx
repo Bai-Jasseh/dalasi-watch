@@ -5,13 +5,13 @@ import { Users, Map, ShieldCheck, ArrowRight, Activity } from "lucide-react";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "LumaTrack — Transparency in Every Basket" },
+{ title: "DalasiWatch — Transparency in Every Basket" },
       {
         name: "description",
         content:
-          "From Banjul to Basse, LumaTrack tracks the pulse of the nation. Find fair prices and monitor inflation across The Gambia.",
+          "From Banjul to Basse, DalasiWatch tracks the pulse of the nation. Find fair prices and monitor inflation across The Gambia.",
       },
-      { property: "og:title", content: "LumaTrack — Transparency in Every Basket" },
+      { property: "og:title", content: "DalasiWatch — Transparency in Every Basket" },
       {
         property: "og:description",
         content: "The Gambia's official community-powered price monitoring platform.",
@@ -39,7 +39,7 @@ function Landing() {
             <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gold text-gold-foreground">
               <Activity className="h-4 w-4" />
             </div>
-            LumaTrack
+DalasiWatch
           </div>
           <Link
             to="/dashboard"
@@ -91,7 +91,7 @@ function Landing() {
               to="/dashboard"
               className="group inline-flex items-center gap-2 rounded-full bg-gold px-8 py-4 text-base font-semibold text-gold-foreground shadow-glow transition-transform duration-300 animate-breath hover:-translate-y-0.5 hover:shadow-elegant"
             >
-              Launch LumaTrack Dashboard
+              Launch DalasiWatch Dashboard
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
           </motion.div>
@@ -109,7 +109,7 @@ function Landing() {
       {/* Trust bar */}
       <section className="mx-auto max-w-7xl px-4 py-16 md:py-24">
         <div className="mb-10 text-center">
-          <h2 className="text-3xl font-bold md:text-4xl">How LumaTrack Works</h2>
+          <h2 className="text-3xl font-bold md:text-4xl">How DalasiWatch Works</h2>
           <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
             A trusted bridge between citizens, markets, and the Ministry of Trade.
           </p>
@@ -159,7 +159,7 @@ function Landing() {
       </section>
 
       <footer className="border-t border-border py-8 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} LumaTrack · Built for The Gambia 🇬🇲
+        © {new Date().getFullYear()} DalasiWatch · Built for The Gambia 🇬🇲
       </footer>
     </div>
   );

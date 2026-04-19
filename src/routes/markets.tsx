@@ -12,10 +12,10 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/markets")({
   head: () => ({
     meta: [
-      { title: "Markets — LumaTrack" },
+{ title: "Markets — DalasiWatch" },
       {
         name: "description",
-        content: "Browse all commodities tracked by LumaTrack across 7 regions of The Gambia.",
+        content: "Browse all commodities tracked by DalasiWatch across 7 regions of The Gambia.",
       },
     ],
   }),

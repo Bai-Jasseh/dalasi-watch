@@ -3,7 +3,7 @@ export type Lang = "en" | "wo" | "mn";
 export const STRINGS = {
   en: {
     appTagline: "National Market Intelligence",
-    launch: "Launch LumaTrack Dashboard",
+    launch: "Launch DalasiWatch Dashboard",
     home: "Home",
     markets: "Markets",
     report: "Report",
@@ -19,7 +19,7 @@ export const STRINGS = {
   },
   wo: {
     appTagline: "Xibaaru Marse bu Réew mi",
-    launch: "Ubbi LumaTrack Dashboard",
+    launch: "Ubbi DalasiWatch Dashboard",
     home: "Kër",
     markets: "Marse yi",
     report: "Yégle",
@@ -35,7 +35,7 @@ export const STRINGS = {
   },
   mn: {
     appTagline: "Bantaba Lonnaa Banko",
-    launch: "Yele LumaTrack Tablo",
+    launch: "Yele DalasiWatch Tablo",
     home: "Suo",
     markets: "Marisew",
     report: "Fokabaa",

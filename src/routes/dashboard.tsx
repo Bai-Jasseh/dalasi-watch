@@ -13,7 +13,7 @@ import { getLatest, isGouging, pctVsRecommended } from "@/data/generator";
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
     meta: [
-      { title: "Dashboard — LumaTrack" },
+      { title: "Dashboard — DalasiWatch" },
       {
         name: "description",
         content: "Live commodity prices, alerts, and Ministry of Trade announcements.",
