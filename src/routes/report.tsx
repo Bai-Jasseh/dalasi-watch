@@ -35,6 +35,36 @@ function Report() {
     price: "",
     reporter: "",
   });
+  const [commodityQuery, setCommodityQuery] = React.useState(
+    `${COMMODITIES[0].name} (${COMMODITIES[0].unit})`,
+  );
+  const [commodityOpen, setCommodityOpen] = React.useState(false);
+  const [highlightIdx, setHighlightIdx] = React.useState(0);
+  const commodityBoxRef = React.useRef<HTMLDivElement>(null);
+
+  const filteredCommodities = React.useMemo(() => {
+    const q = commodityQuery.trim().toLowerCase();
+    if (!q) return COMMODITIES;
+    return COMMODITIES.filter((c) =>
+      `${c.name} ${c.unit} ${c.category}`.toLowerCase().includes(q),
+    );
+  }, [commodityQuery]);
+
+  React.useEffect(() => {
+    function onClick(e: MouseEvent) {
+      if (commodityBoxRef.current && !commodityBoxRef.current.contains(e.target as Node)) {
+        setCommodityOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
+
+  function pickCommodity(c: (typeof COMMODITIES)[number]) {
+    update("commodityId", c.id);
+    setCommodityQuery(`${c.name} (${c.unit})`);
+    setCommodityOpen(false);
+  }
 
   React.useEffect(() => {
     setReports(loadReports());
