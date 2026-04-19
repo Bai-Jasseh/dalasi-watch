@@ -2,6 +2,7 @@ import * as React from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { AppShell } from "@/components/AppShell";
+import { PageIntro } from "@/components/PageIntro";
 import { CommoditySearch } from "@/components/CommoditySearch";
 import { CATEGORIES, COMMODITIES, REGIONS, type Category } from "@/data/commodities";
 import { getLatest, isGouging } from "@/data/generator";
@@ -48,6 +49,16 @@ function Markets() {
           </p>
           <h1 className="mt-1 text-3xl font-extrabold md:text-4xl">All Commodities</h1>
         </div>
+
+        <PageIntro
+          title="Browse every food and household item we track"
+          description="This is the full shopping list for the whole country. Filter by category, choose a region, then tap any item to open its detailed price report."
+          bullets={[
+            "Use the category buttons (Essentials, Protein, Produce…) to narrow the list.",
+            "Switch the Region selector to see prices in one specific area.",
+            "Items with a red Alert tag are priced unfairly high.",
+          ]}
+        />
 
         <CommoditySearch />
 

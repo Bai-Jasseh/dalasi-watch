@@ -12,6 +12,7 @@ import {
   Legend,
 } from "recharts";
 import { AppShell } from "@/components/AppShell";
+import { PageIntro } from "@/components/PageIntro";
 import { COMMODITIES, REGIONS } from "@/data/commodities";
 import { useApp } from "@/context/AppContext";
 
@@ -70,6 +71,16 @@ function Compare() {
             Side-by-side regional pricing for any commodity over the last 10 days.
           </p>
         </div>
+
+        <PageIntro
+          title="Compare prices in two cities at once"
+          description="Wonder if rice is cheaper in Banjul or in Basse? Pick a food and two regions — we'll draw the bars side by side so the difference is obvious."
+          bullets={[
+            "Choose a commodity from the first dropdown.",
+            "Pick Region A and Region B to compare.",
+            "Taller bars = higher price. Compare the colors across the last 10 days.",
+          ]}
+        />
 
         <div className="grid gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm md:grid-cols-3">
           <Field label="Commodity">
