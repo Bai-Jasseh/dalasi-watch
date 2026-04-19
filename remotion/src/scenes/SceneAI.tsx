@@ -4,7 +4,6 @@ import {
   useVideoConfig,
   interpolate,
   spring,
-  Sequence,
 } from "remotion";
 import { loadFont as loadInter } from "@remotion/google-fonts/Inter";
 import { loadFont as loadSpaceGrotesk } from "@remotion/google-fonts/SpaceGrotesk";
@@ -16,7 +15,7 @@ const { fontFamily: display } = loadSpaceGrotesk("normal", { weights: ["700"] })
 const Bubble: React.FC<{
   side: "user" | "ai";
   delay: number;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   typing?: boolean;
 }> = ({ side, delay, children, typing }) => {
   const frame = useCurrentFrame();
@@ -30,28 +29,24 @@ const Bubble: React.FC<{
         opacity: p,
         transform: `translateY(${y}px)`,
         alignSelf: isUser ? "flex-end" : "flex-start",
-        maxWidth: "78%",
-        background: isUser
-          ? COLORS.green
-          : "rgba(255,255,255,0.06)",
+        maxWidth: "82%",
+        background: isUser ? COLORS.green : "rgba(255,255,255,0.06)",
         color: isUser ? COLORS.white : COLORS.cream,
-        border: isUser
-          ? "none"
-          : "1px solid rgba(255,255,255,0.1)",
-        padding: "20px 26px",
+        border: isUser ? "none" : "1px solid rgba(255,255,255,0.1)",
+        padding: "18px 24px",
         borderRadius: 22,
         borderBottomRightRadius: isUser ? 6 : 22,
         borderBottomLeftRadius: isUser ? 22 : 6,
-        fontSize: 24,
+        fontSize: 22,
         lineHeight: 1.45,
         fontFamily: inter,
       }}
     >
       {typing ? (
-        <span style={{ display: "inline-flex", gap: 6 }}>
+        <span style={{ display: "inline-flex", gap: 6, alignItems: "center", height: 20 }}>
           {[0, 1, 2].map((i) => {
             const t = (frame - delay - i * 4) / 8;
-            const op = 0.3 + 0.7 * Math.abs(Math.sin(t));
+            const op = 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(t));
             return (
               <span
                 key={i}
@@ -74,30 +69,79 @@ const Bubble: React.FC<{
   );
 };
 
+const FeatureRow: React.FC<{ baseDelay: number }> = ({ baseDelay }) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+
+  const items = [
+    { label: "Tool-calling", icon: "🔧" },
+    { label: "Grounded in DB", icon: "📊" },
+    { label: "No hallucinations", icon: "✓" },
+  ];
+
+  return (
+    <div style={{ display: "flex", gap: 14, marginTop: 36, flexWrap: "wrap" }}>
+      {items.map((it, i) => {
+        const p = spring({
+          frame: frame - baseDelay - i * 8,
+          fps,
+          config: { damping: 18 },
+        });
+        const y = interpolate(p, [0, 1], [16, 0]);
+        return (
+          <div
+            key={it.label}
+            style={{
+              opacity: p,
+              transform: `translateY(${y}px)`,
+              background: "rgba(16,185,129,0.1)",
+              border: "1px solid rgba(16,185,129,0.3)",
+              color: COLORS.cream,
+              padding: "12px 20px",
+              borderRadius: 999,
+              fontSize: 18,
+              fontWeight: 500,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <span>{it.icon}</span>
+            {it.label}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 export const SceneAI: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const titleP = spring({ frame, fps, config: { damping: 200 } });
   const phoneP = spring({ frame: frame - 10, fps, config: { damping: 18 } });
   const phoneY = interpolate(phoneP, [0, 1], [60, 0]);
-
-  // Sparkle pulse on the AI badge
   const pulse = 1 + 0.06 * Math.sin(frame / 6);
+
+  // Frame-gated rendering for chat bubbles
+  const showAnswer = frame >= 90;
+  const showSecondQ = frame >= 160;
+  const showSecondTyping = frame >= 200;
 
   return (
     <AbsoluteFill
       style={{
         background: `linear-gradient(135deg, ${COLORS.navyDeep} 0%, ${COLORS.navy} 100%)`,
-        padding: 100,
+        padding: 90,
         fontFamily: inter,
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        gap: 80,
+        gap: 70,
       }}
     >
-      {/* Left side: pitch copy */}
-      <div style={{ flex: 1, opacity: titleP }}>
+      {/* Left side */}
+      <div style={{ flex: 1, opacity: titleP, alignSelf: "center" }}>
         <div
           style={{
             display: "inline-flex",
@@ -108,7 +152,7 @@ export const SceneAI: React.FC = () => {
             color: COLORS.amber,
             padding: "10px 20px",
             borderRadius: 999,
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: 600,
             letterSpacing: 2,
             textTransform: "uppercase",
@@ -121,7 +165,7 @@ export const SceneAI: React.FC = () => {
         <h2
           style={{
             fontFamily: display,
-            fontSize: 92,
+            fontSize: 84,
             color: COLORS.cream,
             margin: "24px 0 0 0",
             lineHeight: 1.02,
@@ -135,51 +179,52 @@ export const SceneAI: React.FC = () => {
         </h2>
         <p
           style={{
-            fontSize: 28,
+            fontSize: 24,
             color: COLORS.muted,
-            marginTop: 28,
+            marginTop: 24,
             lineHeight: 1.45,
-            maxWidth: 640,
+            maxWidth: 620,
           }}
         >
-          Every answer is grounded in real prices from
-          <span style={{ color: COLORS.cream }}> price_history </span>
-          and
-          <span style={{ color: COLORS.cream }}> citizen reports </span>—
+          Every answer is grounded in real prices from{" "}
+          <span style={{ color: COLORS.cream }}>price_history</span> and{" "}
+          <span style={{ color: COLORS.cream }}>citizen reports</span> —
           never hallucinated.
         </p>
 
-        <Sequence from={70}>
-          <FeatureRow />
-        </Sequence>
+        <FeatureRow baseDelay={70} />
       </div>
 
-      {/* Right side: phone-like chat mockup */}
+      {/* Right side: chat mockup */}
       <div
         style={{
           width: 560,
           opacity: phoneP,
           transform: `translateY(${phoneY}px)`,
+          alignSelf: "center",
         }}
       >
         <div
           style={{
-            background: "rgba(11,27,59,0.9)",
+            background: "rgba(11,27,59,0.92)",
             border: "1px solid rgba(255,255,255,0.1)",
-            borderRadius: 36,
+            borderRadius: 32,
             overflow: "hidden",
             boxShadow:
               "0 30px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(16,185,129,0.15)",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
           {/* Header */}
           <div
             style={{
-              padding: "22px 26px",
+              padding: "20px 24px",
               borderBottom: "1px solid rgba(255,255,255,0.08)",
               display: "flex",
               alignItems: "center",
               gap: 14,
+              flexShrink: 0,
             }}
           >
             <div
@@ -192,22 +237,31 @@ export const SceneAI: React.FC = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 fontSize: 22,
+                flexShrink: 0,
               }}
             >
               ✨
             </div>
-            <div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
               <div
                 style={{
                   color: COLORS.cream,
                   fontWeight: 600,
-                  fontSize: 22,
+                  fontSize: 20,
                   fontFamily: display,
+                  lineHeight: 1.1,
                 }}
               >
                 Ask DalasiWatch
               </div>
-              <div style={{ color: COLORS.muted, fontSize: 16 }}>
+              <div
+                style={{
+                  color: COLORS.muted,
+                  fontSize: 14,
+                  marginTop: 4,
+                  lineHeight: 1.1,
+                }}
+              >
                 AI · powered by real market data
               </div>
             </div>
@@ -216,25 +270,25 @@ export const SceneAI: React.FC = () => {
           {/* Chat */}
           <div
             style={{
-              padding: 26,
+              padding: 22,
               display: "flex",
               flexDirection: "column",
-              gap: 16,
-              minHeight: 520,
+              gap: 14,
+              minHeight: 560,
             }}
           >
             <Bubble side="user" delay={20}>
               Where is sugar cheapest this week?
             </Bubble>
 
-            <Bubble side="ai" delay={55} typing />
+            {!showAnswer && <Bubble side="ai" delay={55} typing />}
 
-            <Sequence from={85}>
-              <Bubble side="ai" delay={0}>
+            {showAnswer && (
+              <Bubble side="ai" delay={90}>
                 <div style={{ fontWeight: 600, marginBottom: 6 }}>
                   Sugar (1kg) — last 7 days
                 </div>
-                <div style={{ color: COLORS.muted, fontSize: 20 }}>
+                <div style={{ color: COLORS.muted, fontSize: 18, lineHeight: 1.5 }}>
                   Cheapest:{" "}
                   <span style={{ color: COLORS.green, fontWeight: 600 }}>
                     Brikama · GMD 72
@@ -249,66 +303,18 @@ export const SceneAI: React.FC = () => {
                   <span style={{ color: COLORS.cream }}>GMD 75</span>
                 </div>
               </Bubble>
-            </Sequence>
+            )}
 
-            <Sequence from={140}>
-              <Bubble side="user" delay={0}>
+            {showSecondQ && (
+              <Bubble side="user" delay={160}>
                 Compare onion prices: Banjul vs Basse
               </Bubble>
-            </Sequence>
+            )}
 
-            <Sequence from={170}>
-              <Bubble side="ai" delay={0} typing />
-            </Sequence>
+            {showSecondTyping && <Bubble side="ai" delay={200} typing />}
           </div>
         </div>
       </div>
     </AbsoluteFill>
-  );
-};
-
-const FeatureRow: React.FC = () => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-
-  const items = [
-    { label: "Tool-calling", icon: "🔧" },
-    { label: "Grounded in DB", icon: "📊" },
-    { label: "No hallucinations", icon: "✓" },
-  ];
-
-  return (
-    <div style={{ display: "flex", gap: 16, marginTop: 36, flexWrap: "wrap" }}>
-      {items.map((it, i) => {
-        const p = spring({
-          frame: frame - i * 8,
-          fps,
-          config: { damping: 18 },
-        });
-        const y = interpolate(p, [0, 1], [16, 0]);
-        return (
-          <div
-            key={it.label}
-            style={{
-              opacity: p,
-              transform: `translateY(${y}px)`,
-              background: "rgba(16,185,129,0.1)",
-              border: "1px solid rgba(16,185,129,0.3)",
-              color: COLORS.cream,
-              padding: "14px 22px",
-              borderRadius: 999,
-              fontSize: 20,
-              fontWeight: 500,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
-            <span>{it.icon}</span>
-            {it.label}
-          </div>
-        );
-      })}
-    </div>
   );
 };
