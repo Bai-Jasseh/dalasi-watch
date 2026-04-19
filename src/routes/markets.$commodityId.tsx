@@ -79,6 +79,16 @@ function Detail() {
 
   const latestAvg = trend.at(-1)?.price ?? 0;
 
+  // Gauge: 0% = at/below recommended, 100% = 50%+ above recommended
+  // Green zone 0-20%, Amber 20-40%, Red 40-100% (gouging threshold is +20%)
+  const overPct = commodity.recommended > 0
+    ? ((latestAvg - commodity.recommended) / commodity.recommended) * 100
+    : 0;
+  const gaugePos = Math.max(0, Math.min(100, (overPct / 50) * 100));
+  const gouging = isGouging(latestAvg, commodity.recommended);
+  const zoneColor =
+    overPct >= 20 ? "var(--alert)" : overPct >= 10 ? "#f59e0b" : "var(--stable)";
+
   return (
     <AppShell>
       <div className="space-y-6">
