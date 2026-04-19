@@ -221,38 +221,56 @@ function Report() {
             </span>
           </div>
           <p className="text-sm text-muted-foreground">
-            Recent prices shared by fellow Gambians. No names — just facts from the market.
+            A price needs <strong>2 or more matching reports</strong> from different shoppers before it shows the green Verified badge. Until then, it stays as Pending.
           </p>
-          {reports.length === 0 ? (
+          {verified.length === 0 ? (
             <div className="rounded-xl border border-dashed border-border bg-muted/30 p-6 text-center text-sm text-muted-foreground">
               No reports yet. Be the first to share a price you saw today!
             </div>
           ) : (
             <ul className="divide-y divide-border">
-              {reports.slice(0, 12).map((r) => {
-                const c = COMMODITIES.find((x) => x.id === r.commodityId);
-                const reg = REGIONS.find((x) => x.id === r.regionId);
+              {verified.slice(0, 12).map((v) => {
+                const c = COMMODITIES.find((x) => x.id === v.commodityId);
+                const reg = REGIONS.find((x) => x.id === v.regionId);
                 return (
-                  <li key={r.id} className="flex items-center justify-between gap-3 py-3">
+                  <li key={v.key} className="flex items-center justify-between gap-3 py-3">
                     <div className="min-w-0">
-                      <div className="flex items-center gap-2 text-sm font-semibold">
-                        <span>{c?.name ?? r.commodityId}</span>
+                      <div className="flex flex-wrap items-center gap-2 text-sm font-semibold">
+                        <span>{c?.name ?? v.commodityId}</span>
                         <span className="text-muted-foreground">·</span>
-                        <span className="truncate text-muted-foreground">{r.market}</span>
+                        <span className="truncate text-muted-foreground">{v.market}</span>
+                        {v.verified ? (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-stable/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-stable">
+                            <ShieldCheck className="h-3 w-3" /> Verified · {v.count}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-600">
+                            <Clock className="h-3 w-3" /> Pending · {v.count}/2
+                          </span>
+                        )}
                       </div>
                       <div className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
                         <MapPin className="h-3 w-3" />
-                        {reg?.name ?? r.regionId} · {r.date}
+                        {reg?.name ?? v.regionId} · {v.lastDate}
                       </div>
                     </div>
-                    <div className="shrink-0 rounded-lg bg-navy/10 px-3 py-1.5 text-sm font-bold text-navy">
-                      GMD {r.price.toLocaleString()}
+                    <div
+                      className={`shrink-0 rounded-lg px-3 py-1.5 text-sm font-bold ${
+                        v.verified ? "bg-stable/10 text-stable" : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      GMD {v.avgPrice.toLocaleString()}
                       {c?.unit ? <span className="ml-1 text-xs font-medium opacity-70">/{c.unit}</span> : null}
                     </div>
                   </li>
                 );
               })}
             </ul>
+          )}
+          {reports.length > 0 && (
+            <p className="pt-1 text-[11px] text-muted-foreground">
+              {reports.length} total submission{reports.length === 1 ? "" : "s"} from the community.
+            </p>
           )}
         </section>
       </div>
