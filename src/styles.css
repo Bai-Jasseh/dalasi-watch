@@ -189,7 +189,7 @@
     box-shadow: var(--shadow-glow);
   }
   .ticker-track {
-    animation: ticker-scroll 40s linear infinite;
+    animation: ticker-scroll 70s linear infinite;
   }
 }
 
