@@ -14,7 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      citizen_reports: {
+        Row: {
+          commodity_id: string
+          created_at: string
+          id: string
+          market: string
+          price: number
+          region_id: string
+          report_date: string
+          reporter: string | null
+        }
+        Insert: {
+          commodity_id: string
+          created_at?: string
+          id?: string
+          market: string
+          price: number
+          region_id: string
+          report_date?: string
+          reporter?: string | null
+        }
+        Update: {
+          commodity_id?: string
+          created_at?: string
+          id?: string
+          market?: string
+          price?: number
+          region_id?: string
+          report_date?: string
+          reporter?: string | null
+        }
+        Relationships: []
+      }
+      price_history: {
+        Row: {
+          commodity_id: string
+          created_at: string
+          id: string
+          point_date: string
+          price: number
+          region_id: string
+        }
+        Insert: {
+          commodity_id: string
+          created_at?: string
+          id?: string
+          point_date: string
+          price: number
+          region_id: string
+        }
+        Update: {
+          commodity_id?: string
+          created_at?: string
+          id?: string
+          point_date?: string
+          price?: number
+          region_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

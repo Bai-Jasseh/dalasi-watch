@@ -8,7 +8,8 @@ interface Ctx {
   setLang: (l: Lang) => void;
   t: (k: StringKey) => string;
   history: PricePoint[];
-  refreshHistory: () => void;
+  loading: boolean;
+  refreshHistory: () => Promise<void>;
 }
 
 const AppCtx = React.createContext<Ctx | null>(null);
@@ -16,16 +17,27 @@ const AppCtx = React.createContext<Ctx | null>(null);
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = React.useState<Lang>("en");
   const [history, setHistory] = React.useState<PricePoint[]>([]);
+  const [loading, setLoading] = React.useState(true);
+
+  const fetchHistory = React.useCallback(async () => {
+    setLoading(true);
+    try {
+      const h = await loadHistory();
+      setHistory(h);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   React.useEffect(() => {
-    setHistory(loadHistory());
+    fetchHistory();
     try {
-const stored = localStorage.getItem("dalasiwatch:lang") as Lang | null;
-    if (stored) setLangState(stored);
+      const stored = localStorage.getItem("dalasiwatch:lang") as Lang | null;
+      if (stored) setLangState(stored);
     } catch {
       /* ignore */
     }
-  }, []);
+  }, [fetchHistory]);
 
   const setLang = (l: Lang) => {
     setLangState(l);
@@ -37,10 +49,11 @@ const stored = localStorage.getItem("dalasiwatch:lang") as Lang | null;
   };
 
   const t = (k: StringKey) => STRINGS[lang][k] ?? STRINGS.en[k];
-  const refreshHistory = () => setHistory(loadHistory());
 
   return (
-    <AppCtx.Provider value={{ lang, setLang, t, history, refreshHistory }}>
+    <AppCtx.Provider
+      value={{ lang, setLang, t, history, loading, refreshHistory: fetchHistory }}
+    >
       {children}
     </AppCtx.Provider>
   );
