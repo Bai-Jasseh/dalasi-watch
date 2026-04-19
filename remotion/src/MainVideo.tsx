@@ -14,6 +14,7 @@ import { SceneSolution } from "./scenes/SceneSolution";
 import { SceneMarkets } from "./scenes/SceneMarkets";
 import { SceneReport } from "./scenes/SceneReport";
 import { SceneVerify } from "./scenes/SceneVerify";
+import { SceneAI } from "./scenes/SceneAI";
 import { SceneImpact } from "./scenes/SceneImpact";
 import { SceneClose } from "./scenes/SceneClose";
 import { COLORS } from "./theme";
