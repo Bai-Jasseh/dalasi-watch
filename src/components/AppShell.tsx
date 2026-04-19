@@ -31,7 +31,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </Link>
           <nav className="hidden items-center gap-1 md:flex">
             {NAV.map((n) => {
-              const active = loc.pathname.startsWith(n.to);
+            const active = n.to === "/" ? loc.pathname === "/" : loc.pathname.startsWith(n.to);
               return (
                 <Link
                   key={n.to}
