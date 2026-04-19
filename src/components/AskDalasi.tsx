@@ -12,13 +12,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { ChartBlock, parseAssistantContent } from "@/components/ChartBlock";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
 const STARTERS = [
-  "What's the price of rice in Brikama?",
-  "Where is sugar cheapest right now?",
-  "Compare onion prices across regions",
+  "Which 5 commodities rose the most this month?",
+  "Rank the regions from cheapest to most expensive",
+  "Compare rice vs flour trends over 90 days",
+  "Show me all proteins under GMD 200 in Basse",
+  "What's the inflation index this quarter?",
+  "Which commodities are most volatile right now?",
 ];
 
 const ENDPOINT = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ask-dalasi`;
@@ -131,8 +135,19 @@ export function AskDalasi() {
                 )}
               >
                 {m.role === "assistant" ? (
-                  <div className="prose prose-sm max-w-none dark:prose-invert prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-headings:my-2">
-                    <ReactMarkdown>{m.content}</ReactMarkdown>
+                  <div className="space-y-2">
+                    {parseAssistantContent(m.content).map((part, idx) =>
+                      part.kind === "chart" ? (
+                        <ChartBlock key={idx} spec={part.spec} />
+                      ) : (
+                        <div
+                          key={idx}
+                          className="prose prose-sm max-w-none dark:prose-invert prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-headings:my-2 prose-table:my-2 prose-th:px-2 prose-td:px-2"
+                        >
+                          <ReactMarkdown>{part.text}</ReactMarkdown>
+                        </div>
+                      ),
+                    )}
                   </div>
                 ) : (
                   <p className="whitespace-pre-wrap">{m.content}</p>
