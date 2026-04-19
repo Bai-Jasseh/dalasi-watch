@@ -24,9 +24,10 @@ export const Route = createFileRoute("/report")({
 });
 
 function Report() {
-  const { refreshHistory } = useApp();
+  const { refreshHistory, history } = useApp();
   const [submitted, setSubmitted] = React.useState(false);
   const [reports, setReports] = React.useState<CitizenReport[]>([]);
+  const [verified, setVerified] = React.useState<VerifiedReport[]>([]);
   const [form, setForm] = React.useState({
     commodityId: COMMODITIES[0].id,
     regionId: REGIONS[0].id,
@@ -37,7 +38,17 @@ function Report() {
 
   React.useEffect(() => {
     setReports(loadReports());
+    setVerified(getVerifiedReports());
   }, []);
+
+  // Already-trusted reference prices per region (from official history feed)
+  const regionalReference = React.useMemo(() => {
+    const latest = getLatest(history).filter((p) => p.commodityId === form.commodityId);
+    return REGIONS.map((r) => {
+      const point = latest.find((p) => p.regionId === r.id);
+      return { region: r, price: point?.price };
+    });
+  }, [history, form.commodityId]);
 
   function update<K extends keyof typeof form>(k: K, v: string) {
     setForm((f) => ({ ...f, [k]: v }));
