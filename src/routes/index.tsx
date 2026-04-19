@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Users, Map, ShieldCheck, ArrowRight, Activity, Play } from "lucide-react";
+import { Users, Map, ShieldCheck, ArrowRight, Activity, Play, HelpCircle } from "lucide-react";
 import { useRef, useState } from "react";
 import {
   Dialog,
@@ -8,6 +8,43 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
+const FAQS = [
+  {
+    q: "What is DalasiWatch?",
+    a: "DalasiWatch is The Gambia's community-powered price monitoring platform. It tracks daily prices of essential commodities across all 7 regions and compares them to Ministry of Trade recommended prices.",
+  },
+  {
+    q: "Where does the price data come from?",
+    a: "Prices are crowd-sourced from citizens, market reporters, and verified vendors across the country, then cross-checked against official Ministry of Trade benchmarks.",
+  },
+  {
+    q: "What is the Cost Index?",
+    a: "The Cost Index summarizes how expensive a basket of essentials is right now versus government-recommended prices. 100 = matches recommended; above 100 means the market is more expensive; below 100 means cheaper.",
+  },
+  {
+    q: "Is DalasiWatch free to use?",
+    a: "Yes — browsing prices, analytics, and reports is completely free for citizens, journalists, and government bodies.",
+  },
+  {
+    q: "Can I report a price I saw at my local market?",
+    a: "Absolutely. Use the Report page to submit the commodity, market, region, and price you observed. Every submission helps improve national accuracy.",
+  },
+  {
+    q: "How often is the data updated?",
+    a: "Prices and analytics refresh daily as new citizen reports come in. Trend charts and the Cost Index are recomputed automatically.",
+  },
+  {
+    q: "Who uses DalasiWatch?",
+    a: "Consumers looking for fair prices, journalists tracking inflation, traders comparing markets, and government bodies monitoring price stability and policy impact.",
+  },
+];
 
 export const Route = createFileRoute("/")({
   head: () => ({
