@@ -7,6 +7,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { AskDalasi } from "@/components/AskDalasi";
 import type { Lang } from "@/i18n/strings";
 
 const NAV = [
@@ -126,6 +127,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           );
         })}
       </nav>
+
+      <AskDalasi />
     </div>
   );
 }
