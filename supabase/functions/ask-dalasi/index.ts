@@ -284,8 +284,8 @@ RULES:
 - All prices are in GMD (Gambian Dalasi). Format like "GMD 75" or "75 Dalasi".
 - Be concise and conversational. Use markdown lists/tables when comparing items.
 - If a tool returns no data for a commodity/region, say so honestly — don't fabricate.
+- If a user asks about a commodity NOT in the tracked list below, say "We don't currently track [item] prices" and then suggest 2-3 related items we DO track from the catalog.
 - If the user's question is ambiguous (e.g. "rice" — there are 3 types), ask a brief clarifying question OR show the closest match and mention alternatives.
-- Available commodities and regions: call list_commodities / list_regions if you need to map a user's words to IDs.
 - For "where is X cheapest?" use compare_regions. For trends/changes over time, use get_price_trend.`;
 
 Deno.serve(async (req) => {
