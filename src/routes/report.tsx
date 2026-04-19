@@ -35,6 +35,36 @@ function Report() {
     price: "",
     reporter: "",
   });
+  const [commodityQuery, setCommodityQuery] = React.useState(
+    `${COMMODITIES[0].name} (${COMMODITIES[0].unit})`,
+  );
+  const [commodityOpen, setCommodityOpen] = React.useState(false);
+  const [highlightIdx, setHighlightIdx] = React.useState(0);
+  const commodityBoxRef = React.useRef<HTMLDivElement>(null);
+
+  const filteredCommodities = React.useMemo(() => {
+    const q = commodityQuery.trim().toLowerCase();
+    if (!q) return COMMODITIES;
+    return COMMODITIES.filter((c) =>
+      `${c.name} ${c.unit} ${c.category}`.toLowerCase().includes(q),
+    );
+  }, [commodityQuery]);
+
+  React.useEffect(() => {
+    function onClick(e: MouseEvent) {
+      if (commodityBoxRef.current && !commodityBoxRef.current.contains(e.target as Node)) {
+        setCommodityOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
+
+  function pickCommodity(c: (typeof COMMODITIES)[number]) {
+    update("commodityId", c.id);
+    setCommodityQuery(`${c.name} (${c.unit})`);
+    setCommodityOpen(false);
+  }
 
   React.useEffect(() => {
     setReports(loadReports());
@@ -145,17 +175,68 @@ function Report() {
           className="space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm"
         >
           <Field label="Commodity">
-            <select
-              value={form.commodityId}
-              onChange={(e) => update("commodityId", e.target.value)}
-              className="input"
-            >
-              {COMMODITIES.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name} ({c.unit})
-                </option>
-              ))}
-            </select>
+            <div ref={commodityBoxRef} className="relative">
+              <input
+                type="text"
+                value={commodityQuery}
+                onChange={(e) => {
+                  setCommodityQuery(e.target.value);
+                  setCommodityOpen(true);
+                  setHighlightIdx(0);
+                }}
+                onFocus={() => setCommodityOpen(true)}
+                onKeyDown={(e) => {
+                  if (!commodityOpen) return;
+                  if (e.key === "ArrowDown") {
+                    e.preventDefault();
+                    setHighlightIdx((i) => Math.min(i + 1, filteredCommodities.length - 1));
+                  } else if (e.key === "ArrowUp") {
+                    e.preventDefault();
+                    setHighlightIdx((i) => Math.max(i - 1, 0));
+                  } else if (e.key === "Enter") {
+                    e.preventDefault();
+                    const pick = filteredCommodities[highlightIdx];
+                    if (pick) pickCommodity(pick);
+                  } else if (e.key === "Escape") {
+                    setCommodityOpen(false);
+                  }
+                }}
+                placeholder="Type to search e.g. Rice, Sugar, Onion…"
+                className="input"
+                role="combobox"
+                aria-expanded={commodityOpen}
+                aria-autocomplete="list"
+              />
+              {commodityOpen && filteredCommodities.length > 0 && (
+                <ul className="absolute z-20 mt-1 max-h-64 w-full overflow-auto rounded-xl border border-border bg-card shadow-elegant">
+                  {filteredCommodities.map((c, i) => (
+                    <li key={c.id}>
+                      <button
+                        type="button"
+                        onMouseEnter={() => setHighlightIdx(i)}
+                        onClick={() => pickCommodity(c)}
+                        className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm ${
+                          i === highlightIdx ? "bg-accent" : ""
+                        } ${c.id === form.commodityId ? "font-semibold text-navy" : ""}`}
+                      >
+                        <span>
+                          {c.name}{" "}
+                          <span className="text-xs text-muted-foreground">({c.unit})</span>
+                        </span>
+                        <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                          {c.category}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {commodityOpen && filteredCommodities.length === 0 && (
+                <div className="absolute z-20 mt-1 w-full rounded-xl border border-border bg-card px-3 py-2 text-sm text-muted-foreground shadow-elegant">
+                  No commodity matches “{commodityQuery}”.
+                </div>
+              )}
+            </div>
           </Field>
           <div className="grid gap-4 md:grid-cols-2">
             <Field label="Region">
