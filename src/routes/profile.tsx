@@ -8,11 +8,11 @@ import type { Lang } from "@/i18n/strings";
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
-      { title: "Profile & Settings — LumaTrack" },
+{ title: "Profile & Settings — DalasiWatch" },
       {
         name: "description",
         content:
-          "Choose your language (English, Wolof, Mandinka), manage saved markets, and install LumaTrack.",
+          "Choose your language (English, Wolof, Mandinka), manage saved markets, and install DalasiWatch.",
       },
     ],
   }),
@@ -30,9 +30,9 @@ function Profile() {
 
   function resetData() {
     if (typeof window === "undefined") return;
-    if (!confirm("Reset all local LumaTrack data?")) return;
-    localStorage.removeItem("lumatrack:history:v1");
-    localStorage.removeItem("lumatrack:reports:v1");
+if (!confirm("Reset all local DalasiWatch data?")) return;
+    localStorage.removeItem("dalasiwatch:history:v1");
+    localStorage.removeItem("dalasiwatch:reports:v1");
     refreshHistory();
   }
 
@@ -46,12 +46,12 @@ function Profile() {
           <h1 className="mt-1 text-3xl font-extrabold md:text-4xl">Profile</h1>
         </div>
 
-        <PageIntro
-          title="Make LumaTrack feel like home"
+<PageIntro
+          title="Make DalasiWatch feel like home"
           description="This is your settings room. Choose the language you read best, install the app on your phone, and manage the data we keep on your device."
           bullets={[
             "Switch the whole app to English, Wolof, or Mandinka.",
-            "Follow the steps to add LumaTrack to your phone's home screen.",
+            "Follow the steps to add DalasiWatch to your phone's home screen.",
             "Reset local data if you ever want a fresh start.",
           ]}
         />
@@ -75,9 +75,9 @@ function Profile() {
           </div>
         </Section>
 
-        <Section icon={Smartphone} title="Install LumaTrack">
+<Section icon={Smartphone} title="Install DalasiWatch">
           <p className="text-sm text-muted-foreground">
-            Add LumaTrack to your home screen for one-tap access — works offline with cached data.
+            Add DalasiWatch to your home screen for one-tap access — works offline with cached data.
           </p>
           <ol className="mt-3 list-decimal space-y-1 pl-5 text-sm text-foreground/85">
             <li>Open this site in your phone's browser.</li>

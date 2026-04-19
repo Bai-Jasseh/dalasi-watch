@@ -1,7 +1,7 @@
 import { generateHistory, type PricePoint } from "./generator";
 
-const KEY = "lumatrack:history:v1";
-const REPORTS_KEY = "lumatrack:reports:v1";
+const KEY = "dalasiwatch:history:v1";
+const REPORTS_KEY = "dalasiwatch:reports:v1";
 
 export function loadHistory(): PricePoint[] {
   if (typeof window === "undefined") return generateHistory();

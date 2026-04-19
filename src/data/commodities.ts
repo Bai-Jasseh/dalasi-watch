@@ -70,6 +70,6 @@ export const MINISTRY_FEED = [
   "Ministry of Trade caps Sugar (1kg) at GMD 75 nationwide.",
   "New cooking oil shipment arrives at Banjul Port — prices expected to stabilize.",
   "Ramadan price-control task force activated across all 7 regions.",
-  "Public notice: report price gouging via the LumaTrack Citizen Reporting tool.",
+  "Public notice: report price gouging via the DalasiWatch Citizen Reporting tool.",
   "Subsidy program extended for rice and flour through Q2.",
 ];

@@ -12,7 +12,7 @@ import { useApp } from "@/context/AppContext";
 export const Route = createFileRoute("/report")({
   head: () => ({
     meta: [
-      { title: "Report a Price — LumaTrack" },
+      { title: "Report a Price — DalasiWatch" },
       {
         name: "description",
         content:

@@ -20,8 +20,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   React.useEffect(() => {
     setHistory(loadHistory());
     try {
-      const stored = localStorage.getItem("lumatrack:lang") as Lang | null;
-      if (stored) setLangState(stored);
+const stored = localStorage.getItem("dalasiwatch:lang") as Lang | null;
+    if (stored) setLangState(stored);
     } catch {
       /* ignore */
     }
@@ -30,7 +30,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const setLang = (l: Lang) => {
     setLangState(l);
     try {
-      localStorage.setItem("lumatrack:lang", l);
+      localStorage.setItem("dalasiwatch:lang", l);
     } catch {
       /* ignore */
     }

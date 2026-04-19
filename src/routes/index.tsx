@@ -39,7 +39,7 @@ function Landing() {
             <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gold text-gold-foreground">
               <Activity className="h-4 w-4" />
             </div>
-            LumaTrack
+LumaTrack
           </div>
           <Link
             to="/dashboard"
