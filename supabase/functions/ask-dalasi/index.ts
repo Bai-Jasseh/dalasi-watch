@@ -48,13 +48,30 @@ const REGIONS = [
   { id: "basse", name: "Basse" },
 ];
 
-const COMMODITY_IDS = new Set(COMMODITIES.map((c) => c.id));
 const REGION_IDS = new Set(REGIONS.map((r) => r.id));
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
 );
+
+// Commodities that actually have price data — populated per-request.
+let AVAILABLE_COMMODITY_IDS: Set<string> = new Set();
+
+async function loadAvailableCommodities(): Promise<void> {
+  const [ph, cr] = await Promise.all([
+    supabase.from("price_history").select("commodity_id"),
+    supabase.from("citizen_reports").select("commodity_id"),
+  ]);
+  const ids = new Set<string>();
+  (ph.data ?? []).forEach((r: any) => ids.add(r.commodity_id));
+  (cr.data ?? []).forEach((r: any) => ids.add(r.commodity_id));
+  AVAILABLE_COMMODITY_IDS = ids;
+}
+
+function availableCommodities() {
+  return COMMODITIES.filter((c) => AVAILABLE_COMMODITY_IDS.has(c.id));
+}
 
 // ---------- Tool implementations ----------
 
@@ -68,8 +85,8 @@ function regionLabel(id: string) {
 }
 
 async function getLatestPrice(args: { commodity_id: string; region_id?: string }) {
-  if (!COMMODITY_IDS.has(args.commodity_id)) {
-    return { error: `Unknown commodity_id "${args.commodity_id}". Use list_commodities to see valid IDs.` };
+  if (!AVAILABLE_COMMODITY_IDS.has(args.commodity_id)) {
+    return { error: `No price data available for "${args.commodity_id}". Use list_commodities to see commodities we currently track prices for.` };
   }
   if (args.region_id && !REGION_IDS.has(args.region_id)) {
     return { error: `Unknown region_id "${args.region_id}". Use list_regions to see valid IDs.` };
@@ -123,7 +140,7 @@ async function getLatestPrice(args: { commodity_id: string; region_id?: string }
 }
 
 async function getPriceTrend(args: { commodity_id: string; region_id: string; days?: number }) {
-  if (!COMMODITY_IDS.has(args.commodity_id)) return { error: `Unknown commodity_id "${args.commodity_id}".` };
+  if (!AVAILABLE_COMMODITY_IDS.has(args.commodity_id)) return { error: `No price data for "${args.commodity_id}".` };
   if (!REGION_IDS.has(args.region_id)) return { error: `Unknown region_id "${args.region_id}".` };
   const days = Math.min(Math.max(args.days ?? 30, 1), 365);
 
@@ -165,7 +182,7 @@ async function getPriceTrend(args: { commodity_id: string; region_id: string; da
 }
 
 async function compareRegions(args: { commodity_id: string }) {
-  if (!COMMODITY_IDS.has(args.commodity_id)) return { error: `Unknown commodity_id "${args.commodity_id}".` };
+  if (!AVAILABLE_COMMODITY_IDS.has(args.commodity_id)) return { error: `No price data for "${args.commodity_id}".` };
   const latest = await getLatestPrice({ commodity_id: args.commodity_id });
   if ("error" in latest) return latest;
   const sorted = [...(latest.prices ?? [])].sort((a, b) => a.price - b.price);
@@ -246,7 +263,7 @@ const TOOLS = [
 async function runTool(name: string, args: any) {
   switch (name) {
     case "list_commodities":
-      return { commodities: COMMODITIES };
+      return { commodities: availableCommodities() };
     case "list_regions":
       return { regions: REGIONS };
     case "get_latest_price":
@@ -267,8 +284,8 @@ RULES:
 - All prices are in GMD (Gambian Dalasi). Format like "GMD 75" or "75 Dalasi".
 - Be concise and conversational. Use markdown lists/tables when comparing items.
 - If a tool returns no data for a commodity/region, say so honestly — don't fabricate.
+- If a user asks about a commodity NOT in the tracked list below, say "We don't currently track [item] prices" and then suggest 2-3 related items we DO track from the catalog.
 - If the user's question is ambiguous (e.g. "rice" — there are 3 types), ask a brief clarifying question OR show the closest match and mention alternatives.
-- Available commodities and regions: call list_commodities / list_regions if you need to map a user's words to IDs.
 - For "where is X cheapest?" use compare_regions. For trends/changes over time, use get_price_trend.`;
 
 Deno.serve(async (req) => {
@@ -286,8 +303,17 @@ Deno.serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
+    await loadAvailableCommodities();
+    const catalog = availableCommodities()
+      .map((c) => `- ${c.id}: ${c.name} (${c.unit})`)
+      .join("\n");
+    const dynamicSystem = `${SYSTEM_PROMPT}
+
+CURRENTLY TRACKED COMMODITIES (only these have price data — do NOT offer or invent others):
+${catalog}`;
+
     let messages: any[] = [
-      { role: "system", content: SYSTEM_PROMPT },
+      { role: "system", content: dynamicSystem },
       ...userMessages,
     ];
 
