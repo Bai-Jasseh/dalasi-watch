@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer';
 
 const BASE = 'https://dalasi-watch.lovable.app';
-const OUT = 'remotion/public/screens';
+const OUT = 'public/screens';
 
 const pages = [
   { name: 'home',       url: '/',                       wait: 1500 },
