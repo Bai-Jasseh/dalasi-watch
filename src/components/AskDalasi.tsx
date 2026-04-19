@@ -12,13 +12,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { ChartBlock, parseAssistantContent } from "@/components/ChartBlock";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
 const STARTERS = [
-  "What's the price of rice in Brikama?",
-  "Where is sugar cheapest right now?",
-  "Compare onion prices across regions",
+  "Which 5 commodities rose the most this month?",
+  "Rank the regions from cheapest to most expensive",
+  "Compare rice vs flour trends over 90 days",
+  "Show me all proteins under GMD 200 in Basse",
+  "What's the inflation index this quarter?",
+  "Which commodities are most volatile right now?",
 ];
 
 const ENDPOINT = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ask-dalasi`;
@@ -89,14 +93,14 @@ export function AskDalasi() {
       </button>
 
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="right" className="flex w-full flex-col p-0 sm:max-w-md">
+        <SheetContent side="right" className="flex w-full flex-col p-0 sm:max-w-lg">
           <SheetHeader className="border-b border-border bg-navy p-4 text-left text-navy-foreground">
             <SheetTitle className="flex items-center gap-2 text-navy-foreground">
               <Sparkles className="h-4 w-4 text-gold" />
-              Ask DalasiWatch
+              Ask DalasiWatch — Market Analyst
             </SheetTitle>
             <SheetDescription className="text-navy-foreground/70">
-              AI assistant powered by real market data from all 7 regions.
+              AI analyst with 13 tools: prices, trends, top movers, volatility, regional rankings, inflation index & more.
             </SheetDescription>
           </SheetHeader>
 
@@ -104,7 +108,7 @@ export function AskDalasi() {
             {messages.length === 0 && (
               <div className="space-y-3">
                 <p className="text-sm text-muted-foreground">
-                  Ask about prices, compare regions, or check trends. Try:
+                  Ask anything about Gambian market data — I'll filter, sort, chart, and explain. Try:
                 </p>
                 <div className="flex flex-col gap-2">
                   {STARTERS.map((s) => (
@@ -131,8 +135,19 @@ export function AskDalasi() {
                 )}
               >
                 {m.role === "assistant" ? (
-                  <div className="prose prose-sm max-w-none dark:prose-invert prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-headings:my-2">
-                    <ReactMarkdown>{m.content}</ReactMarkdown>
+                  <div className="space-y-2">
+                    {parseAssistantContent(m.content).map((part, idx) =>
+                      part.kind === "chart" ? (
+                        <ChartBlock key={idx} spec={part.spec} />
+                      ) : (
+                        <div
+                          key={idx}
+                          className="prose prose-sm max-w-none dark:prose-invert prose-p:my-1 prose-ul:my-1 prose-ol:my-1 prose-headings:my-2 prose-table:my-2 prose-th:px-2 prose-td:px-2"
+                        >
+                          <ReactMarkdown>{part.text}</ReactMarkdown>
+                        </div>
+                      ),
+                    )}
                   </div>
                 ) : (
                   <p className="whitespace-pre-wrap">{m.content}</p>
