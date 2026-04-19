@@ -1,21 +1,60 @@
+import { supabase } from "@/integrations/supabase/client";
 import { generateHistory, type PricePoint } from "./generator";
 
-const KEY = "dalasiwatch:history:v1";
-const REPORTS_KEY = "dalasiwatch:reports:v1";
+const SEED_FLAG = "dalasiwatch:seeded:v1";
 
-export function loadHistory(): PricePoint[] {
-  if (typeof window === "undefined") return generateHistory();
-  try {
-    const raw = localStorage.getItem(KEY);
-    if (raw) return JSON.parse(raw);
-  } catch {
-    /* ignore */
+/**
+ * Loads price history from Supabase. On first run (empty table), seeds the
+ * generator output into the database so every visitor sees the same data.
+ */
+export async function loadHistory(): Promise<PricePoint[]> {
+  const { data, error } = await supabase
+    .from("price_history")
+    .select("commodity_id, region_id, point_date, price")
+    .order("point_date", { ascending: true });
+
+  if (error) {
+    console.error("loadHistory error", error);
+    return generateHistory();
   }
+
+  if (!data || data.length === 0) {
+    return await seedHistoryIfNeeded();
+  }
+
+  return data.map((r) => ({
+    commodityId: r.commodity_id,
+    regionId: r.region_id,
+    date: r.point_date as string,
+    price: Number(r.price),
+  }));
+}
+
+async function seedHistoryIfNeeded(): Promise<PricePoint[]> {
+  // Avoid concurrent seeders from a single browser session
+  if (typeof window !== "undefined" && sessionStorage.getItem(SEED_FLAG)) {
+    return generateHistory();
+  }
+  if (typeof window !== "undefined") sessionStorage.setItem(SEED_FLAG, "1");
+
   const fresh = generateHistory();
-  try {
-    localStorage.setItem(KEY, JSON.stringify(fresh));
-  } catch {
-    /* ignore */
+  // Insert in chunks to stay within request limits
+  const chunkSize = 500;
+  for (let i = 0; i < fresh.length; i += chunkSize) {
+    const chunk = fresh.slice(i, i + chunkSize).map((p) => ({
+      commodity_id: p.commodityId,
+      region_id: p.regionId,
+      point_date: p.date,
+      price: p.price,
+    }));
+    const { error } = await supabase
+      .from("price_history")
+      .insert(chunk);
+    if (error) {
+      // Likely a race — another tab already seeded. Stop and re-read below.
+      console.warn("seed insert error (continuing)", error.message);
+      break;
+    }
   }
   return fresh;
 }
@@ -30,45 +69,73 @@ export interface CitizenReport {
   reporter?: string;
 }
 
-export function loadReports(): CitizenReport[] {
-  if (typeof window === "undefined") return [];
-  try {
-    return JSON.parse(localStorage.getItem(REPORTS_KEY) || "[]");
-  } catch {
+export async function loadReports(): Promise<CitizenReport[]> {
+  const { data, error } = await supabase
+    .from("citizen_reports")
+    .select("id, commodity_id, region_id, market, price, reporter, report_date")
+    .order("created_at", { ascending: false })
+    .limit(500);
+
+  if (error) {
+    console.error("loadReports error", error);
     return [];
   }
+  return (data ?? []).map((r) => ({
+    id: r.id,
+    commodityId: r.commodity_id,
+    regionId: r.region_id,
+    market: r.market,
+    price: Number(r.price),
+    reporter: r.reporter ?? undefined,
+    date: r.report_date as string,
+  }));
 }
 
-export function saveReport(r: CitizenReport) {
-  const all = loadReports();
-  all.unshift(r);
-  localStorage.setItem(REPORTS_KEY, JSON.stringify(all.slice(0, 200)));
+export async function saveReport(
+  r: Omit<CitizenReport, "id">,
+): Promise<void> {
+  const { error } = await supabase.from("citizen_reports").insert({
+    commodity_id: r.commodityId,
+    region_id: r.regionId,
+    market: r.market,
+    price: r.price,
+    reporter: r.reporter || null,
+    report_date: r.date,
+  });
+  if (error) {
+    console.error("saveReport error", error);
+    throw error;
+  }
 
-  // Only push to shared history when the report is verified by 2+ reporters
-  // for the same commodity, region and market (within ±15% price agreement).
+  // If the new report agrees with another report for the same item/market
+  // within ±15%, push the average into shared price_history.
   try {
-    const group = all.filter(
-      (x) =>
-        x.commodityId === r.commodityId &&
-        x.regionId === r.regionId &&
-        x.market.trim().toLowerCase() === r.market.trim().toLowerCase(),
-    );
-    const agree = group.filter(
-      (x) => Math.abs(x.price - r.price) / r.price <= 0.15,
-    );
-    if (agree.length >= 2) {
-      const avg = Math.round(agree.reduce((s, x) => s + x.price, 0) / agree.length);
-      const h = loadHistory();
-      h.push({
-        commodityId: r.commodityId,
-        regionId: r.regionId,
-        date: r.date,
-        price: avg,
-      });
-      localStorage.setItem(KEY, JSON.stringify(h));
+    const { data: group } = await supabase
+      .from("citizen_reports")
+      .select("price")
+      .eq("commodity_id", r.commodityId)
+      .eq("region_id", r.regionId)
+      .ilike("market", r.market.trim());
+
+    if (group && group.length >= 2) {
+      const prices = group.map((g) => Number(g.price));
+      const agree = prices.filter(
+        (p) => Math.abs(p - r.price) / r.price <= 0.15,
+      );
+      if (agree.length >= 2) {
+        const avg = Math.round(
+          agree.reduce((s, x) => s + x, 0) / agree.length,
+        );
+        await supabase.from("price_history").insert({
+          commodity_id: r.commodityId,
+          region_id: r.regionId,
+          point_date: r.date,
+          price: avg,
+        });
+      }
     }
-  } catch {
-    /* ignore */
+  } catch (e) {
+    console.warn("verification step failed", e);
   }
 }
 
@@ -87,8 +154,8 @@ export interface VerifiedReport {
  * Groups raw citizen reports by commodity + region + market and marks a group
  * as verified once at least 2 reporters submitted prices that agree within ±15%.
  */
-export function getVerifiedReports(): VerifiedReport[] {
-  const all = loadReports();
+export async function getVerifiedReports(): Promise<VerifiedReport[]> {
+  const all = await loadReports();
   const groups = new Map<string, CitizenReport[]>();
   for (const r of all) {
     const k = `${r.commodityId}|${r.regionId}|${r.market.trim().toLowerCase()}`;
