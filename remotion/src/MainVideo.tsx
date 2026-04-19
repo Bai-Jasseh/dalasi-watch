@@ -94,6 +94,17 @@ export const MainVideo: React.FC = () => {
           timing={linearTiming({ durationInFrames: 18 })}
         />
 
+        <TransitionSeries.Sequence durationInFrames={270}>
+          <SceneAI />
+        </TransitionSeries.Sequence>
+        <TransitionSeries.Transition
+          presentation={slide({ direction: "from-right" })}
+          timing={springTiming({
+            config: { damping: 200 },
+            durationInFrames: 22,
+          })}
+        />
+
         <TransitionSeries.Sequence durationInFrames={240}>
           <SceneImpact />
         </TransitionSeries.Sequence>
