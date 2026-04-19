@@ -25,6 +25,7 @@ export const Route = createFileRoute("/report")({
 function Report() {
   const { refreshHistory } = useApp();
   const [submitted, setSubmitted] = React.useState(false);
+  const [reports, setReports] = React.useState<CitizenReport[]>([]);
   const [form, setForm] = React.useState({
     commodityId: COMMODITIES[0].id,
     regionId: REGIONS[0].id,
@@ -32,6 +33,10 @@ function Report() {
     price: "",
     reporter: "",
   });
+
+  React.useEffect(() => {
+    setReports(loadReports());
+  }, []);
 
   function update<K extends keyof typeof form>(k: K, v: string) {
     setForm((f) => ({ ...f, [k]: v }));
@@ -52,6 +57,7 @@ function Report() {
     };
     saveReport(r);
     refreshHistory();
+    setReports(loadReports());
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 4000);
     setForm((f) => ({ ...f, market: "", price: "" }));
