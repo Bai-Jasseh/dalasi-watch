@@ -8,9 +8,9 @@
 
 ## What is this?
 
-DalasiWatch is a web app I built to help Gambians track prices of everyday essentials — rice, oil, sugar, cement, fuel, and more. Prices are submitted by people like you and me from local markets, and the app compares them against official Ministry of Trade recommendations so we can spot unfair pricing.
+DalasiWatch is a web app I built to help Gambians track prices of everyday essentials which includes rice, oil, sugar, cement, fuel, and more. Prices are submitted by people like you and me from local markets, and the app compares them against official Ministry of Trade recommendations so we can spot unfair pricing.
 
-I made it because I noticed how hard it is to know if you're being overcharged. One market might sell rice for D1,200 while another sells it for D1,500 — and most people never know the difference.
+I made it because I noticed how hard it is to know if you're being overcharged. One market might sell rice for D1,200 while another sells it for D1,500, and most people never know the difference.
 
 ---
 
@@ -92,7 +92,6 @@ In production, citizen-submitted prices are stored securely in the database.
 
 ## Deployment
 
-Published on [Lovable](https://lovable.dev):
 
 - **Frontend:** Served by Lovable's CDN
 - **Backend / Database:** Lovable Cloud (Supabase)
