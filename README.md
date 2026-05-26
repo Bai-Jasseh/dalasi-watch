@@ -1,70 +1,56 @@
 # DalasiWatch
 
-> The Gambia's community-powered price monitoring platform. From Banjul to Basse, tracking the pulse of the nation.
+> A community-powered price tracker for The Gambia. From Banjul to Basse, keeping an eye on what matters.
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-dalasi--watch.lovable.app-gold)](https://dalasi-watch.lovable.app)
+**Live site:** [dalasi-watch.lovable.app](https://dalasi-watch.lovable.app)
 
 ---
 
-## Overview
+## What is this?
 
-**DalasiWatch** is a full-stack web application that brings price transparency to The Gambia. It empowers citizens, journalists, traders, and government bodies with real-time insights into commodity prices across all seven regions.
+DalasiWatch is a web app I built to help Gambians track prices of everyday essentials — rice, oil, sugar, cement, fuel, and more. Prices are submitted by people like you and me from local markets, and the app compares them against official Ministry of Trade recommendations so we can spot unfair pricing.
 
-Prices are crowd-sourced from local markets and compared against official **Ministry of Trade** recommended benchmarks. The platform includes trend analytics, a cost-of-living index, an AI-powered assistant, and a public reporting interface for citizen submissions.
+I made it because I noticed how hard it is to know if you're being overcharged. One market might sell rice for D1,200 while another sells it for D1,500 — and most people never know the difference.
 
 ---
 
 ## Features
 
-### Core Dashboard
-- **Real-time Price Dashboard** — Live prices for 25+ essential commodities across all 7 regions (Banjul, Kanifing, Brikama, Mansakonko, Kerewan, Janjanbureh, Basse)
-- **Regional Analytics** — Interactive charts (trends, volatility, logistics premiums) powered by Recharts
-- **Cost Index** — A composite basket index summarizing how expensive essentials are versus government recommendations
-- **Price Comparison** — Side-by-side market and regional price comparisons
-- **Gouging Detection** — Automatic flagging when prices exceed 20% above Ministry of Trade benchmarks
-
-### Citizen Engagement
-- **Report a Price** — Public submission form for citizens to report local market prices
-- **AI Chatbot** — "Ask Dalasi" — a conversational assistant for market and price questions
-- **Demo Video** — A 4-minute pitch demo embedded on the landing page
+- **Live Price Dashboard** — See current prices across all 7 regions (Banjul, Kanifing, Brikama, Mansakonko, Kerewan, Janjanbureh, Basse)
+- **Report a Price** — Anyone can submit what they paid at their local market
+- **Price Trends** — Charts showing how prices have changed over the past 30 days
+- **Fairness Check** — Prices that go 20% above government benchmarks get flagged automatically
+- **Ask Dalasi** — A simple chatbot you can ask about market prices and commodities
+- **Compare Markets** — Side-by-side price comparison between regions
+- **Cost of Living Index** — A single number that tells you how expensive essentials are right now
 
 ---
 
 ## Tech Stack
 
-Frontend
+I built this with:
 
-React 19
-TanStack Start (SSR/SSG)
-Vite 7
+- **React** + **TypeScript** — for the user interface
+- **Tailwind CSS** — for styling
+- **TanStack Router** — for page navigation
+- **Recharts** — for the price charts
+- **Supabase (via Lovable Cloud)** — for the database, authentication, and storing reported prices
+- **Framer Motion** — for smooth animations
 
-Styling & UI
-
-Tailwind CSS v4
-shadcn/ui (Radix UI)
-Framer Motion
-
-Data Visualization
-
-Recharts
-
-Backend
-
-Supabase (Lovable Cloud)
-Real-time database + authentication
-
-Forms & Validation
-
-React Hook Form
-Zod
+The app was built on [Lovable](https://lovable.dev), which handled a lot of the backend setup for me, so I could focus on building the actual product.
 
 ---
-Architecture Overview
-File-based routing system (TanStack Start)
-Modular component structure
-Separation of UI / data / hooks / logic layers
-Reusable analytics and dashboard components
-Simulated + real-time hybrid data model
+
+## Project Structure
+
+```
+src/
+  routes/           # Pages (home, dashboard, markets, report, etc.)
+  components/         # Reusable UI pieces
+  data/             # Commodity data and price generators
+  i18n/             # English / Wolof translations
+  integrations/     # Supabase connection
+  context/          # Global state (language, history)
 ```
 
 ---
@@ -73,62 +59,59 @@ Simulated + real-time hybrid data model
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) 20+ (or [Bun](https://bun.sh/))
-- A [Lovable Cloud](https://lovable.dev) project
+- Node.js 20+ (or Bun)
+- A Lovable Cloud project (or your own Supabase backend)
 
-### Installation
+### Install & Run
 
 ```bash
-# Clone the repository
 git clone https://github.com/Bai-Jasseh/dalasi-watch.git
 cd dalasi-watch
-
-# Install dependencies
 bun install
+bun dev
 ```
 
-### Environment Setup
+The app should open at `http://localhost:5173`.
 
-This project uses Lovable Cloud (Supabase) for the backend. Environment variables are managed through the Lovable Cloud integration and are auto-configured.
+> **Note:** The backend connection (Supabase) is auto-configured if you're using Lovable Cloud. If you're running this independently, you'll need to set up your own Supabase project and update the connection details.
 
 ---
 
+## The Data
 
-## Data Model
-
-The application works with a static dataset of:
+The app works with a dataset of:
 
 - **7 Regions** — Banjul, Kanifing, Brikama, Mansakonko, Kerewan, Janjanbureh, Basse
 - **25+ Commodities** — Rice, flour, sugar, oil, fish, onions, cement, fuel, etc.
-- **Ministry of Trade Recommended Prices** — Government benchmark prices per commodity
-- **Simulated Daily History** — A deterministic random-walk generator produces 30 days of realistic price data for demo/analytics purposes
+- **Ministry of Trade Prices** — Government benchmark prices per commodity
+- **Simulated History** — For demo purposes, the app generates 30 days of realistic price movements so you can see the charts working even without live submissions
 
-In production, citizen-submitted prices and official benchmarks are stored in the Supabase database with RLS policies ensuring secure read/write access.
+In production, citizen-submitted prices are stored securely in the database.
 
 ---
 
 ## Deployment
 
-This project deploys seamlessly on [Lovable](https://lovable.dev):
+Published on [Lovable](https://lovable.dev):
 
-- **Frontend:** Lovable Cloud (CDN + Edge SSR)
+- **Frontend:** Served by Lovable's CDN
 - **Backend / Database:** Lovable Cloud (Supabase)
-- **Auth:** Supabase Auth (email/password + social providers)
+- **Authentication:** Supabase Auth (email/password)
 
-**Published URL:** [https://dalasi-watch.lovable.app](https://dalasi-watch.lovable.app)
+**Live URL:** [https://dalasi-watch.lovable.app](https://dalasi-watch.lovable.app)
 
 ---
 
-🤝 Impact
+## Why I Built This
 
-DalasiWatch demonstrates how data systems and frontend engineering can solve real economic visibility problems in developing regions, making pricing information more transparent and accessible.
+I'm passionate about using tech to solve real problems in The Gambia. Price transparency shouldn't require a degree in economics — it should be as simple as opening an app. This project is my way of contributing to that.
 
 ---
 
 ## Contact
 
-**Project Author:** [Bai-Jasseh](https://github.com/Bai-Jasseh)  
-**Project Link:** [https://github.com/Bai-Jasseh/dalasi-watch](https://github.com/Bai-Jasseh/dalasi-watch)
+**Built by:** [Bai-Jasseh](https://github.com/Bai-Jasseh)  
+**Project:** [github.com/Bai-Jasseh/dalasi-watch](https://github.com/Bai-Jasseh/dalasi-watch)
 
 ---
 
