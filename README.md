@@ -32,48 +32,39 @@ Prices are crowd-sourced from local markets and compared against official **Mini
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| **Framework** | [TanStack Start](https://tanstack.com/start) v1 (React 19, SSR/SSG, file-based routing) |
-| **Build Tool** | [Vite](https://vitejs.dev/) 7 |
-| **Styling** | [Tailwind CSS](https://tailwindcss.com/) v4 + CSS design tokens |
-| **UI Components** | [shadcn/ui](https://ui.shadcn.com/) (Radix UI primitives) |
-| **Animation** | [Framer Motion](https://www.framer.com/motion/) |
-| **Charts** | [Recharts](https://recharts.org/) |
-| **Backend / Auth** | [Lovable Cloud](https://lovable.dev) (Supabase) — Database, Auth, Realtime |
-| **Server Functions** | TanStack `createServerFn` (RPC over HTTP) |
-| **Forms** | React Hook Form + Zod |
-| **Icons** | [Lucide React](https://lucide.dev/) |
+Frontend
+
+React 19
+TanStack Start (SSR/SSG)
+Vite 7
+
+Styling & UI
+
+Tailwind CSS v4
+shadcn/ui (Radix UI)
+Framer Motion
+
+Data Visualization
+
+Recharts
+
+Backend
+
+Supabase (Lovable Cloud)
+Real-time database + authentication
+
+Forms & Validation
+
+React Hook Form
+Zod
 
 ---
-
-## Project Structure
-
-```
-├── src/
-│   ├── components/          # React components (UI primitives + domain)
-│   ├── context/             # AppContext.tsx — global state
-│   ├── data/                # Static data: commodities, regions, price generator
-│   ├── hooks/               # Custom React hooks
-│   ├── i18n/                # Internationalization strings
-│   ├── integrations/        # Supabase clients (auto-generated)
-│   ├── lib/                 # Utility functions
-│   ├── routes/              # TanStack file-based routes
-│   │   ├── index.tsx        # Landing page
-│   │   ├── dashboard.tsx    # Price dashboard
-│   │   ├── analytics.tsx    # Charts & trends
-│   │   ├── compare.tsx      # Market comparison
-│   │   ├── markets.tsx      # Market directory
-│   │   ├── markets.$commodityId.tsx  # Commodity detail
-│   │   ├── report.tsx       # Citizen price report form
-│   │   ├── profile.tsx      # User profile
-│   │   └── __root.tsx       # Root layout
-│   ├── styles.css           # Tailwind v4 + design tokens
-│   └── router.tsx           # Router configuration
-├── supabase/                # Supabase config (config.toml)
-├── package.json
-├── vite.config.ts
-└── wrangler.jsonc           # Cloudflare Workers config
+Architecture Overview
+File-based routing system (TanStack Start)
+Modular component structure
+Separation of UI / data / hooks / logic layers
+Reusable analytics and dashboard components
+Simulated + real-time hybrid data model
 ```
 
 ---
@@ -102,17 +93,6 @@ This project uses Lovable Cloud (Supabase) for the backend. Environment variable
 
 ---
 
-## Available Scripts
-
-| Script | Command | Description |
-|--------|---------|-------------|
-| Dev | `bun run dev` | Start Vite dev server with hot reload |
-| Build | `bun run build` | Production build (SSG/SSR ready) |
-| Preview | `bun run preview` | Preview production build locally |
-| Lint | `bun run lint` | Run ESLint |
-| Format | `bun run format` | Run Prettier on all files |
-
----
 
 ## Data Model
 
@@ -139,17 +119,9 @@ This project deploys seamlessly on [Lovable](https://lovable.dev):
 
 ---
 
-## Contributing
+🤝 Impact
 
-Contributions are welcome. To contribute:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-Please ensure your code passes linting and formatting checks before submitting.
+DalasiWatch demonstrates how data systems and frontend engineering can solve real economic visibility problems in developing regions, making pricing information more transparent and accessible.
 
 ---
 
