@@ -227,18 +227,19 @@ function Bulletin() {
               </div>
 
               <div className="mt-6 rounded-xl border border-border bg-muted/30 p-5">
-                <p className="text-sm leading-relaxed text-foreground sm:text-base">
-                  This week, national prices averaged{" "}
-                  <strong>
-                    {nationalIndex >= 0 ? "+" : ""}
-                    {nationalIndex.toFixed(1)}% above the Ministry of Trade's recommended prices
-                  </strong>
-                  . {indexChange >= 0 ? "Pressure increased" : "Pressure eased"} by{" "}
-                  {Math.abs(indexChange).toFixed(1)} percentage points compared to the previous
-                  week. The highest stress is in{" "}
-                  <strong>{mostExpensiveRegion?.region.name}</strong>, while{" "}
-                  <strong>{cheapestRegion?.region.name}</strong> remains closest to the benchmark.
-                </p>
+              <p className="text-sm leading-relaxed text-foreground sm:text-base">
+                This week, national prices averaged{" "}
+                <strong>
+                  {nationalIndex >= 0 ? "+" : ""}
+                  {nationalIndex.toFixed(1)}%
+                  {nationalIndex >= 0 ? " above" : " below"} the Ministry of Trade's recommended
+                  prices
+                </strong>
+                . {indexChange >= 0 ? "Pressure increased" : "Pressure eased"} by{" "}
+                {Math.abs(indexChange).toFixed(1)} percentage points compared to the previous week.
+                The highest stress is in <strong>{mostExpensiveRegion?.region.name}</strong>, while{" "}
+                <strong>{cheapestRegion?.region.name}</strong> remains closest to the benchmark.
+              </p>
               </div>
             </section>
 
