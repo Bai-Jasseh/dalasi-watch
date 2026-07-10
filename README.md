@@ -82,8 +82,8 @@ The app should open at `http://localhost:5173`.
 
 The app works with a dataset of:
 
-- **7 Regions** — Banjul, Kanifing, Brikama, Mansakonko, Kerewan, Janjanbureh, Basse
-- **25+ Commodities** — Rice, flour, sugar, oil, fish, onions, cement, fuel, etc.
+- **7 Regions** — Banjul, Kanifing, Brikama, Soma, Farafenni, Bansang, Basse
+- **25+ Commodities** — Rice, flour, sugar, oil, fish, onions, charcoal, gas, and more
 - **Ministry of Trade Prices** — Government benchmark prices per commodity
 - **Simulated History** — For demo purposes, the app generates 30 days of realistic price movements so you can see the charts working even without live submissions
 
