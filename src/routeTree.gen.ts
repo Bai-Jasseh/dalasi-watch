@@ -14,6 +14,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as MarketsRouteImport } from './routes/markets'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CompareRouteImport } from './routes/compare'
+import { Route as BulletinRouteImport } from './routes/bulletin'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MarketsCommodityIdRouteImport } from './routes/markets.$commodityId'
@@ -43,6 +44,11 @@ const CompareRoute = CompareRouteImport.update({
   path: '/compare',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BulletinRoute = BulletinRouteImport.update({
+  id: '/bulletin',
+  path: '/bulletin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AnalyticsRoute = AnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
@@ -62,6 +68,7 @@ const MarketsCommodityIdRoute = MarketsCommodityIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
+  '/bulletin': typeof BulletinRoute
   '/compare': typeof CompareRoute
   '/dashboard': typeof DashboardRoute
   '/markets': typeof MarketsRouteWithChildren
@@ -72,6 +79,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
+  '/bulletin': typeof BulletinRoute
   '/compare': typeof CompareRoute
   '/dashboard': typeof DashboardRoute
   '/markets': typeof MarketsRouteWithChildren
@@ -83,6 +91,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
+  '/bulletin': typeof BulletinRoute
   '/compare': typeof CompareRoute
   '/dashboard': typeof DashboardRoute
   '/markets': typeof MarketsRouteWithChildren
@@ -95,6 +104,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/analytics'
+    | '/bulletin'
     | '/compare'
     | '/dashboard'
     | '/markets'
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/analytics'
+    | '/bulletin'
     | '/compare'
     | '/dashboard'
     | '/markets'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/analytics'
+    | '/bulletin'
     | '/compare'
     | '/dashboard'
     | '/markets'
@@ -126,6 +138,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnalyticsRoute: typeof AnalyticsRoute
+  BulletinRoute: typeof BulletinRoute
   CompareRoute: typeof CompareRoute
   DashboardRoute: typeof DashboardRoute
   MarketsRoute: typeof MarketsRouteWithChildren
@@ -170,6 +183,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompareRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bulletin': {
+      id: '/bulletin'
+      path: '/bulletin'
+      fullPath: '/bulletin'
+      preLoaderRoute: typeof BulletinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/analytics': {
       id: '/analytics'
       path: '/analytics'
@@ -208,6 +228,7 @@ const MarketsRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalyticsRoute: AnalyticsRoute,
+  BulletinRoute: BulletinRoute,
   CompareRoute: CompareRoute,
   DashboardRoute: DashboardRoute,
   MarketsRoute: MarketsRouteWithChildren,

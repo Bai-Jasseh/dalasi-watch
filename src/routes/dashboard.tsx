@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { TrendingUp, TrendingDown, Minus, AlertTriangle, ArrowRight } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, AlertTriangle, ArrowRight, Newspaper } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { PageIntro } from "@/components/PageIntro";
 
@@ -101,6 +101,28 @@ function Dashboard() {
         />
 
         <MinistryTicker />
+
+        <Link
+          to="/bulletin"
+          className="group flex items-center justify-between rounded-2xl border border-gold/40 bg-gold/10 p-4 transition-all hover:-translate-y-0.5 hover:shadow-elegant"
+        >
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold text-gold-foreground">
+              <Newspaper className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-gold-foreground">Weekly Market Bulletin</p>
+              <p className="text-xs text-foreground/80">
+                Ministry-ready summary of price movements, alerts, and regional insights.
+              </p>
+            </div>
+          </div>
+          <span className="inline-flex items-center gap-1 text-sm font-semibold text-gold-foreground">
+            Read
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+          </span>
+        </Link>
+
         
 
         {topGouging.length > 0 && (
