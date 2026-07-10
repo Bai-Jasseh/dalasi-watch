@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, Store, Scale, Megaphone, BarChart3, User, Activity, Globe } from "lucide-react";
+import { Home, Store, Scale, Megaphone, BarChart3, User, Activity, Globe, Newspaper } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { cn } from "@/lib/utils";
 import {
@@ -15,6 +15,7 @@ const NAV = [
   { to: "/markets", icon: Store, key: "markets" as const, label: "Markets" },
   { to: "/compare", icon: Scale, key: "compare" as const, label: "Compare" },
   { to: "/analytics", icon: BarChart3, key: "analytics" as const, label: "Analytics" },
+  { to: "/bulletin", icon: Newspaper, key: "bulletin" as const, label: "Bulletin" },
   { to: "/report", icon: Megaphone, key: "report" as const, label: "Report" },
 ];
 
