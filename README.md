@@ -16,7 +16,8 @@ I made it because I noticed how hard it is to know if you're being overcharged. 
 
 ## Features
 
-- **Live Price Dashboard** — See current prices across all 7 regions (Banjul, Kanifing, Brikama, Mansakonko, Kerewan, Janjanbureh, Basse)
+- **Live Price Dashboard** — See current prices across all 7 regions (Banjul, Kanifing, Brikama, Soma, Farafenni, Bansang, Basse)
+- **Weekly Market Bulletin** — Auto-generated ministry-ready report with price movements, gouging alerts, and regional insights
 - **Report a Price** — Anyone can submit what they paid at their local market
 - **Price Trends** — Charts showing how prices have changed over the past 30 days
 - **Fairness Check** — Prices that go 20% above government benchmarks get flagged automatically
